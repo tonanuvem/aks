@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-alpine-a
+  namespace: namespace-a
+spec:
+  containers:
+  - name: alpine
+    image: alpine/curl
+    command: ["/bin/sleep", "3600"]
