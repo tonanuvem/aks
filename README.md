@@ -1,5 +1,5 @@
-# aks
-Azure Kubernetes hands on
+# Azure Kubernetes Services
+Hands on
 
 ## Network Policies
 
