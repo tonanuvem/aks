@@ -1,7 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: access-nginx
+  name: allow-from-pod-with-label
+  namespace: namespace-a
 spec:
   podSelector:
     matchLabels:
@@ -10,4 +11,6 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          name: "pod-alpine-c"
+          acesso: "permitir"
+  policyTypes:
+  - Ingress
