@@ -13,7 +13,7 @@ Seu principal caso de uso é a segmentação de rede e o isolamento de aplicaç�
 
 Quando você cria um cluster AKS, vários componentes de rede são configurados:
 
-- Sub-rede(s) do AKS: podem ser criadas sub rede separadas para os nós e para os Pods.
+- Sub-rede(s) do AKS: podem ser criadas sub redes separadas para os nós e para os Pods.
 - Service CIDR: são definidos ranges de IPs virtuais (não existem na VNet) usado para os Services do Kubernetes do tipo ClusterIP. Padrão: 10.0.0.0/16.
 - DNS Service IP: é definido um endereço IP dentro do Service CIDR (ex: 10.0.0.10) atribuído ao serviço de DNS interno do cluster (geralmente CoreDNS).
 - Load Balancer (Público ou Interno): quando se cria um Service do Kubernetes do tipo LoadBalancer, o AKS provisiona um Azure Load Balancer. Ele recebe um IP público (se for um LB público) ou um IP privado da sua VNet (se for um LB interno) e distribui o tráfego para os nós/Pods apropriados.
