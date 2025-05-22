@@ -46,20 +46,41 @@ kubectl apply -f pod-alpine-b.yaml -n namespace-b
 
 # Antes :funciona
 
-kubectl exec -n namespace-b -it alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
 
 # Depois: timeout
 
-kubectl apply -f np-allow-only-same-namespace.yaml
+kubectl apply -f np-allow-only-same-namespace-a.yaml
 kubectl get networkpolicy -A
 kubectl describe networkpolicy allow-only-same-namespace -n namespace-a
 
-kubectl exec -n namespace-b -it alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
 
+kubectl exec -n namespace-a -it pod-alpine-a -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+
+# Vamos criar o Namespace C:
+
+kubectl create namespace namespace-c
+kubectl get ns namespace-c --show-labels
+kubectl apply -f pod-alpine-c.yaml -n namespace-c
+
+kubectl exec -n namespace-c -it pod-alpine-c -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+
+# Aplicar Network Policies permitindo o pod com label
+
+kubectl apply -f np-allow-from-pod-with-label.yaml
+kubectl get networkpolicies -n namespace-a
+kubectl describe networkpolicies allow-from-pod-with-label -n namespace-a
+
+kubectl get pods -n namespace-c --show-labels
+kubectl label pod pod-alpine-c -n namespace-c acesso=permitir
+
+kubectl exec -n namespace-c -it pod-alpine-c -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
 
 # De novo: funciona
 
-kubectl delete networkpolicy allow-only-same-namespace -n namespace-a
+kubectl delete networkpolicy allow-only-same-namespace-a -n namespace-a
+kubectl get networkpolicies -A
 
 kubectl exec -n namespace-b -it alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
 
