@@ -8,7 +8,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 #	Criação de um certificado autoassinado (para teste):
 
 openssl genrsa -out tls.key 2048
-openssl req -new -key tls.key -out server.csr -subj "/CN=example.com"
+openssl req -new -key tls.key -out server.csr -subj "/CN=sslip.io"
 openssl x509 -req -days 365 -in server.csr -signkey tls.key -out tls.crt
 kubectl create secret tls tls-secret --key tls.key --cert tls.crt
 
