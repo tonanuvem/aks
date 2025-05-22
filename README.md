@@ -31,5 +31,5 @@ Fluxo:
 - O NSG associado à NIC do nó deve permitir esse tráfego (ex: para a porta do NodePort).
 - O kube-proxy do nó recebe o tráfego e o direciona para o IP do Pod de destino.
 - Neste ponto, a Network Policy é avaliada:
-  > Se houver uma política de Ingress aplicada ao Pod de destino, ela verificará se a origem do tráfego (outro Pod, namespace, IP) e a porta/protocolo são permitidos.
-  > Se não houver regra de permissão correspondente, o tráfego é bloqueado.
+  -- Se houver uma política de Ingress aplicada, ela verificará se o Pod/namespace e a porta/protocolo são permitidos.
+  -- Se não houver regra de permissão correspondente, o tráfego é bloqueado.
