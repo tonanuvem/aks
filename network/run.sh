@@ -34,7 +34,7 @@ kubectl apply -f nginx-service-a.yaml
 
 kubectl create namespace namespace-b
 kubectl get ns namespace-b --show-labels
-kubectl apply -f alpine-b.yaml -n namespace-b
+kubectl apply -f pod-alpine-b.yaml -n namespace-b
 
 
 # ✅ Resultado esperado:
@@ -42,12 +42,25 @@ kubectl apply -f alpine-b.yaml -n namespace-b
 #    Depois de aplicar a NetworkPolicy → o curl deve falhar (timeout), pois o tráfego de namespace-b para namespace-a está bloqueado.
 #    Na prática, a configuração não funcionooou pq a driver de rede nao suporta a configuracao
 
+
+# Antes :funciona
+
+kubectl exec -n namespace-b -it alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+
+# Depois: timeout
+
 kubectl apply -f np-allow-only-same-namespace.yaml
 kubectl get networkpolicy -A
+kubectl describe networkpolicy allow-only-same-namespace -n namespace-a
+
+kubectl exec -n namespace-b -it alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+
+
+# De novo: funciona
 
 kubectl delete networkpolicy allow-only-same-namespace -n namespace-a
 
-kubectl exec -n namespace-b -it alpine-b -- sh -c "curl nginx.namespace-a.svc.cluster.local"
+kubectl exec -n namespace-b -it alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
 
 
 # Se, mesmo após aplicar a NetworkPolicy corretamente, o pod Alpine em namespace-b ainda consegue acessar o Nginx em namespace-a, 
