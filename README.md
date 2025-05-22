@@ -30,6 +30,9 @@ Fluxo:
 - O Azure Load Balancer encaminha o tráfego para um dos nós do AKS.
 - O NSG associado à NIC do nó deve permitir esse tráfego (ex: para a porta do NodePort).
 - O kube-proxy do nó recebe o tráfego e o direciona para o IP do Pod de destino.
-- Neste ponto, a Network Policy é avaliada:
-  -- Se houver uma política de Ingress aplicada, ela verificará se o Pod/namespace e a porta/protocolo são permitidos.
-  -- Se não houver regra de permissão correspondente, o tráfego é bloqueado.
+- **Neste ponto, a *Network Policy* é avaliada:**
+  - Se houver uma política de **Ingress** aplicada:
+    - Ela verificará se o **Pod**, **namespace**, **porta** e **protocolo** estão permitidos.
+  - Se **não houver** uma regra de permissão correspondente:
+    - O tráfego será **bloqueado** por padrão.
+
