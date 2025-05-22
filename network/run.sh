@@ -29,8 +29,9 @@ az aks show --resource-group akstraining-rg-2 --name akstraining-cluster-2 --que
 
 kubectl create namespace namespace-a
 kubectl get ns namespace-a --show-labels
-kubectl apply -f nginx-a.yaml -n namespace-a
+kubectl apply -f nginx-deploy-a.yaml -n namespace-a
 kubectl apply -f nginx-service-a.yaml
+kubectl apply -f pod-alpine-a.yaml -n namespace-a
 
 kubectl create namespace namespace-b
 kubectl get ns namespace-b --show-labels
@@ -73,7 +74,8 @@ kubectl exec -n namespace-b -it alpine-b -- sh -c "curl -v --connect-timeout 5 -
 # 👉 Verifique se NetworkPolicy está funcionando:#
 # Execute:#
 
-kubectl get pods -n kube-system -o wide | grep calico
+#kubectl get pods -A -o wide | grep calico
+kubectl get pods -n calico-system
 
 #Se você não vir pods do Calico ou algo similar (como azure-npm), provavelmente o suporte a políticas de rede não está habilitado.
 
