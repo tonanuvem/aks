@@ -23,7 +23,7 @@ Esses NSGs contêm regras para permitir o tráfego essencial para a operação d
 # Fluxo de Tráfego com Network Policies (Exemplo de Entrada):
 
 Propósito:
-Definir quais Pods podem se comunicar com quais outros Pods, com quais namespaces ou com IPs externos, e em quais portas/protocolos.
+- Definir quais Pods podem se comunicar com quais outros Pods, com quais namespaces ou com IPs externos, e em quais portas/protocolos.
 
 Fluxo:
 - Tráfego externo chega a um Service LoadBalancer.
