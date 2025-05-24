@@ -25,6 +25,7 @@ sh wait-for-lb-ip.sh nginx-service-loadbalancer
 
 IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 HOST="$IP.sslip.io"
+echo $HOST
 
 # Substituir HOST no YAML do INGRESS usando envsubst
 
