@@ -47,9 +47,9 @@ kubectl apply -f np-allow-only-same-namespace-a.yaml
 kubectl get networkpolicy -A
 kubectl describe networkpolicy allow-only-same-namespace -n namespace-a
 
-kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx-service-a.namespace-a.svc.cluster.local"
 
-kubectl exec -n namespace-a -it pod-alpine-a -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+kubectl exec -n namespace-a -it pod-alpine-a -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx-service-a.namespace-a.svc.cluster.local"
 
 
 
