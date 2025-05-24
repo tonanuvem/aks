@@ -1,4 +1,5 @@
-# Criação de um Role no namespace default que permite listar pods (salve como pod-reader-role.yaml):
+# Modulo 1: (10 minutos)
+# Criação de um Role no namespace default que permite listar pods
 
 # Aplique o Role:
 kubectl apply -f role-pod-read.yaml
