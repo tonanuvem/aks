@@ -30,7 +30,9 @@ echo $HOST
 # Substituir HOST no YAML do INGRESS usando envsubst
 
 export HOST
-envsubst < ingress-ssl.yaml | kubectl apply -f -
+# envsubst < ingress-ssl.yaml | kubectl apply -f -
+envsubst < ingress-ssl.yaml > ingress-ssl-final.yaml
+kubectl apply -f ingress-ssl-final.yaml
 
 # Aplicar o Ingress:
 kubectl apply -f ingress-ssl.yaml
