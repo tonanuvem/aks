@@ -21,7 +21,7 @@ kubectl apply -f nginx-service.yaml
 
 sh wait-for-lb-ip.sh nginx-service-loadbalancer
 
-#	Criação de um recurso Ingress para expor a aplicação através de HTTPS (salve como https-ingress.yaml):
+#	Criação de um recurso Ingress para expor a aplicação através de HTTPS (ingress-ssl.yaml):
 
 IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 HOST="$IP.sslip.io"
