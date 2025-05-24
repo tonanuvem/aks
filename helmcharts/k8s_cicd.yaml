@@ -1,0 +1,10 @@
+# Exemplo de YAML para tarea do Kubernetes
+steps:
+- task: KubernetesManifest@1
+  inputs:
+    connectionType: 'Azure Resource Manager'
+    azureSubscriptionConnection: 'NomeDaConexaoDeServico'
+    namespace: 'nome-do-namespace'
+    manifests: |
+      $(System.ArtifactsDirectory)/caminho/para/o/manifesto.yaml
+    command: 'apply'
