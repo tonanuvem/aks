@@ -4,9 +4,7 @@ metadata:
   name: allow-from-pod-with-label
   namespace: namespace-a
 spec:
-  podSelector:
-    matchLabels:
-      app: nginx
+  podSelector: {}
   ingress:
   - from:
     - podSelector:
