@@ -1,5 +1,7 @@
 # Azure Kubernetes Services
-Hands on : az login --use-device-code
+Hands on : 
+
+> az login --use-device-code
 
 ## Network Policies
 
