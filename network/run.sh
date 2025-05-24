@@ -1,4 +1,6 @@
-# Modulo 1: Preparação do Ambiente (10 minutos)
+# Modulo 1: Preparação do Ambiente (10 minutos) : FAZER EM DUPLAS, 
+# 1o aluno cria o cluster 1 sem nenhum parametro de rede.
+# 2o aluno cria o cluster 2 com parametros:  --network-plugin azure --network-policy calico 
 
 az login --use-device-code
 # az account set --subscription "Azure for Students"
