@@ -26,7 +26,8 @@
 - 2. Criar um ClusterIssuer usando o DNS-01 via Route 53
 
 > clusterissuer-route53.yaml
-'''
+
+
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
