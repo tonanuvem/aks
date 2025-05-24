@@ -15,7 +15,7 @@ echo -n "Aguardando IP externo para o serviço '$SERVICE_NAME' no namespace '$NA
 while true; do
   EXTERNAL_IP=$(kubectl get svc "$SERVICE_NAME" -n "$NAMESPACE" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   
-  if [[ -n "$EXTERNAL_IP" ]]; then
+  if [ -n "$EXTERNAL_IP" ]; then
     echo -e "\n✅ IP externo disponível: $EXTERNAL_IP"
     break
   fi
