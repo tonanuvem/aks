@@ -15,7 +15,7 @@ kubectl create secret tls tls-secret --key tls.key --cert tls.crt
 # Deploy de uma aplicação web simples (ex: network/nginx-deploy-a).
 
 kubectl apply -f nginx-deploy.yaml
-#kubectl apply -f nginx-service-clusterip.yaml
+kubectl apply -f nginx-service-clusterip.yaml
 #kubectl apply -f nginx-service-loadbalancer.yaml
 
 # Aguardar até que o IP Externo seja alocado
