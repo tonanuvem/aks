@@ -10,23 +10,13 @@ export KUBECONFIG=~/.kube/config-akstraining
 kubectl get nodes
 
 az aks show --resource-group akstraining-rg --name akstraining-cluster --query networkProfile.networkPlugin -o tsv
-
+# resultado esperado = mostra CNI da azure
 
 
 # Módulo 2: Arquitetura de Rede do AKS e Azure Virtual Networks (15 minutos)
 
 kubectl create namespace demo-network
 kubectl apply -f nginx-deploy.yaml
-
-## (Opcional) Se o tempo permitir, instruir os participantes a criar outro cluster AKS (em outro grupo de recursos para evitar conflitos de nome) usando o Azure CNI (--network-plugin azure) e comparar a estrutura da VNet criada.
-
-az group create --name akstraining-rg-2 --location westus
-az aks create --resource-group akstraining-rg-2 --name akstraining-cluster-2 --network-plugin azure --network-policy calico --node-count 2 --enable-addons monitoring --generate-ssh-keys
-az aks get-credentials --resource-group akstraining-rg-2 --name akstraining-cluster-2 --file ~/.kube/config-akstraining
-export KUBECONFIG=~/.kube/config-akstraining
-kubectl get nodes
-
-az aks show --resource-group akstraining-rg-2 --name akstraining-cluster-2 --query networkProfile.networkPlugin -o tsv
 
 # Módulo 3: Implementação de Network Policies no AKS (20 minutos)
 
@@ -49,7 +39,7 @@ kubectl apply -f pod-alpine-b.yaml -n namespace-b
 
 # Antes :funciona
 
-kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx-service-a.namespace-a.svc.cluster.local"
 
 # Depois: timeout
 
@@ -60,6 +50,23 @@ kubectl describe networkpolicy allow-only-same-namespace -n namespace-a
 kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
 
 kubectl exec -n namespace-a -it pod-alpine-a -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+
+
+
+
+
+## (Opcional) Se o tempo permitir, instruir os participantes a criar outro cluster AKS (em outro grupo de recursos para evitar conflitos de nome) usando o Azure CNI (--network-plugin azure) e comparar a estrutura da VNet criada.
+
+az aks delete --yes --name akstraining-rg --resource-group akstraining-rg && az group delete --yes --resource-group akstraining-rg
+
+az group create --name akstraining-rg-2 --location westus
+az aks create --resource-group akstraining-rg-2 --name akstraining-cluster-2 --network-plugin azure --network-policy calico --node-count 2 --enable-addons monitoring --generate-ssh-keys
+az aks get-credentials --resource-group akstraining-rg-2 --name akstraining-cluster-2 --file ~/.kube/config-akstraining
+export KUBECONFIG=~/.kube/config-akstraining
+kubectl get nodes
+
+az aks show --resource-group akstraining-rg-2 --name akstraining-cluster-2 --query networkProfile.networkPlugin -o tsv
+
 
 # Vamos criar o Namespace C:
 
@@ -118,6 +125,6 @@ az aks show --resource-group akstraining-rg-2 --name akstraining-cluster-2 --que
 
 #    null ou vazio → ❌ Não há suporte a NetworkPolicy
 
-az aks delete --yes --name akstraining-rg --resource-group akstraining-rg && az group delete --yes --resource-group akstraining-rg
+
 
 az aks delete --yes --name akstraining-rg-2 --resource-group akstraining-rg-2 && az group delete --yes --resource-group akstraining-rg-2
