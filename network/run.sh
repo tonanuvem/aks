@@ -10,6 +10,7 @@ az aks create --resource-group akstraining-rg --name akstraining-cluster --node-
 az aks get-credentials --resource-group akstraining-rg --name akstraining-cluster --file ~/.kube/config-akstraining --overwrite-existing
 export KUBECONFIG=~/.kube/config-akstraining
 kubectl get nodes
+kubectl get namespaces
 
 az aks show --resource-group akstraining-rg --name akstraining-cluster --query networkProfile.networkPlugin -o tsv
 # resultado esperado = mostra CNI da azure
@@ -68,6 +69,8 @@ az aks create --resource-group akstraining-rg-2 --name akstraining-cluster-2 --n
 az aks get-credentials --resource-group akstraining-rg-2 --name akstraining-cluster-2 --file ~/.kube/config-akstraining  --overwrite-existing
 export KUBECONFIG=~/.kube/config-akstraining
 kubectl get nodes
+kubectl get namespaces
+kubectl get pods -n calico-system
 
 az aks show --resource-group akstraining-rg-2 --name akstraining-cluster-2 --query networkProfile.networkPlugin -o tsv
 
