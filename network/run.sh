@@ -81,9 +81,11 @@ kubectl create namespace namespace-c
 kubectl get ns namespace-c --show-labels
 kubectl apply -f pod-alpine-c.yaml -n namespace-c
 
-kubectl exec -n namespace-c -it pod-alpine-c -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+kubectl exec -n namespace-c -it pod-alpine-c -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx-service-a.namespace-a.svc.cluster.local"
 
-# Aplicar Network Policies permitindo o pod com label
+# Aplicar Network Policies permitindo somente o pod com label
+
+kubectl delete -f np-allow-only-same-namespace-a.yaml
 
 kubectl apply -f np-allow-from-pod-with-label.yaml
 kubectl get networkpolicies -n namespace-a
@@ -91,8 +93,9 @@ kubectl describe networkpolicies allow-from-pod-with-label -n namespace-a
 
 kubectl get pods -n namespace-c --show-labels
 kubectl label pod pod-alpine-c -n namespace-c acesso=permitir
+kubectl get pods -n namespace-c --show-labels
 
-kubectl exec -n namespace-c -it pod-alpine-c -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx.namespace-a.svc.cluster.local"
+kubectl exec -n namespace-c -it pod-alpine-c -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx-service-a.namespace-a.svc.cluster.local"
 
 # De novo: funciona
 
