@@ -1,4 +1,4 @@
-# Modulo 1: Preparação do Ambiente (30 minutos)
+# Modulo 1: Preparação do Ambiente (10 minutos)
 
 az login --use-device-code
 # az account set --subscription "Azure for Students"
@@ -13,7 +13,7 @@ az aks show --resource-group akstraining-rg --name akstraining-cluster --query n
 
 
 
-# Módulo 2: Arquitetura de Rede do AKS e Azure Virtual Networks (45 minutos)
+# Módulo 2: Arquitetura de Rede do AKS e Azure Virtual Networks (15 minutos)
 
 kubectl create namespace demo-network
 kubectl apply -f nginx-deploy.yaml
@@ -28,7 +28,7 @@ kubectl get nodes
 
 az aks show --resource-group akstraining-rg-2 --name akstraining-cluster-2 --query networkProfile.networkPlugin -o tsv
 
-# Módulo 3: Implementação de Network Policies no AKS (60 minutos)
+# Módulo 3: Implementação de Network Policies no AKS (20 minutos)
 
 kubectl create namespace namespace-a
 kubectl get ns namespace-a --show-labels
