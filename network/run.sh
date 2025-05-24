@@ -41,24 +41,26 @@ kubectl apply -f pod-alpine-b.yaml -n namespace-b
 
 kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx-service-a.namespace-a.svc.cluster.local"
 
-# Depois: timeout
+# Depois: deveria dar timeout, mas a configuração não funcionooou pq o driver de rede nao suporta NetworkPolicies
 
 kubectl apply -f np-allow-only-same-namespace-a.yaml
 kubectl get networkpolicy -A
 kubectl describe networkpolicy allow-only-same-namespace -n namespace-a
 
-kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx-service-a.namespace-a.svc.cluster.local"
-
 kubectl exec -n namespace-a -it pod-alpine-a -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx-service-a.namespace-a.svc.cluster.local"
 
+kubectl exec -n namespace-b -it pod-alpine-b -- sh -c "curl -v --connect-timeout 5 --max-time 10 nginx-service-a.namespace-a.svc.cluster.local"
 
+# Tanto o comando executado pelo namespace-b, como pelo namespace-a, esão funcionando; embora só o A deveria funcionar
 
-
+##############
 
 ## (Opcional) Se o tempo permitir, instruir os participantes a criar outro cluster AKS (em outro grupo de recursos para evitar conflitos de nome) usando o Azure CNI (--network-plugin azure) e comparar a estrutura da VNet criada.
 
+# Deletar o cluster 1
 az aks delete --yes --name akstraining-rg --resource-group akstraining-rg && az group delete --yes --resource-group akstraining-rg
 
+# Criar o cluster 2
 az group create --name akstraining-rg-2 --location westus
 az aks create --resource-group akstraining-rg-2 --name akstraining-cluster-2 --network-plugin azure --network-policy calico --node-count 2 --enable-addons monitoring --generate-ssh-keys
 az aks get-credentials --resource-group akstraining-rg-2 --name akstraining-cluster-2 --file ~/.kube/config-akstraining
