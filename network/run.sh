@@ -1,5 +1,8 @@
 # Modulo 1: Preparação do Ambiente (30 minutos)
 
+az login --use-device-code
+# az account set --subscription "Azure for Students"
+
 az group create --name akstraining-rg --location eastus
 az aks create --resource-group akstraining-rg --name akstraining-cluster --node-count 2 --enable-addons monitoring --generate-ssh-keys
 az aks get-credentials --resource-group akstraining-rg --name akstraining-cluster --file ~/.kube/config-akstraining --overwrite-existing
