@@ -20,7 +20,7 @@ kubectl apply -f nginx-deploy.yaml
 
 # Aguardar até que o IP Externo seja alocado
 
-sh wait-for-lb-ip.sh ingress-nginx-controller
+sh wait-for-lb-ip.sh ingress-nginx-controller ingress-nginx
 
 #	Criação de um recurso Ingress para expor a aplicação através de HTTPS (ingress-ssl.yaml):
 
