@@ -22,5 +22,7 @@ helm install my-bitnami-nginx bitnami/nginx
 # Conceitos de CI/CD: integração contínua, entrega contínua e deployment contínuo.
 #	Integração do Azure DevOps com AKS: agentes, pipelines e conexões de serviço.
 #	Automação do processo de build, teste e deployment de aplicações no AKS.
+#	Integração com o Helm para automatizar a instalação de Charts (utilizando o HelmDeploy task).
+# Implementação de testes automatizados no pipeline de CI/CD (adicionando tasks de teste, como CmdLine para executar testes unitários).
 
 
