@@ -15,11 +15,12 @@ kubectl create secret tls tls-secret --key tls.key --cert tls.crt
 # Deploy de uma aplicação web simples (ex: network/nginx-deploy-a).
 
 kubectl apply -f nginx-deploy.yaml
-kubectl apply -f nginx-service-loadbalancer.yaml
+#kubectl apply -f nginx-service-clusterip.yaml
+#kubectl apply -f nginx-service-loadbalancer.yaml
 
 # Aguardar até que o IP Externo seja alocado
 
-sh wait-for-lb-ip.sh nginx-service-loadbalancer
+sh wait-for-lb-ip.sh ingress-nginx-controller
 
 #	Criação de um recurso Ingress para expor a aplicação através de HTTPS (ingress-ssl.yaml):
 
