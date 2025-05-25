@@ -1,0 +1,12 @@
+# Exemplo de ResourceQuota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cpu-mem-quota
+  namespace: meu-namespace
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.cpu: "4"
+    limits.memory: 8Gi
