@@ -1,10 +1,27 @@
-# Exemplo de YAML para tarea do Kubernetes
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  helmVersion: '3.12.0'
+
 steps:
-- task: KubernetesManifest@1
+- task: HelmInstaller@1
+  inputs:
+    helmVersionToInstall: '$(helmVersion)'
+
+- task: HelmDeploy@0
   inputs:
     connectionType: 'Azure Resource Manager'
-    azureSubscriptionConnection: 'NomeDaConexaoDeServico'
-    namespace: 'nome-do-namespace'
-    manifests: |
-      $(System.ArtifactsDirectory)/caminho/para/o/manifesto.yaml
-    command: 'apply'
+    azureSubscription: 'conexao-azure'
+    azureResourceGroup: 'fiap-rg'
+    kubernetesCluster: 'fiap-aks'
+    namespace: 'default'
+    command: 'upgrade'
+    chartType: 'FilePath'
+    chartPath: 'charts/fiap-chart'
+    releaseName: 'fiap-release'
+    overrideValues: |
+      image.repository=tonanuvem/page
