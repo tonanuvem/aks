@@ -50,7 +50,7 @@ envsubst < ingress-ssl.yaml > ingress-ssl-final.yaml
 kubectl apply -f ingress-ssl-final.yaml
 
 
-envsubst < ingress-completo.yaml > ingress-ssl-final.yaml
+envsubst < ingress-completo.yaml > ingress-completo-final.yaml
 kubectl apply -f ingress-completo-final.yaml
 
 kubectl get ingress -n default
