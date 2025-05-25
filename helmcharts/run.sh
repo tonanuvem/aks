@@ -41,7 +41,9 @@ helm install prometheus bitnami/kube-prometheus
 kubectl port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
 
 # Grafana
-helm install grafana bitnami/grafana -f grafana_values.yaml
+IP=$(curl checkip.amazonaws.com)
+envsubst < grafana_values.yaml > grafana_values-final.yaml
+helm install grafana bitnami/grafana -f grafana_values-final.yaml
 # Obter a senha do admin do Grafana 
 kubectl get secret --namespace default grafana-admin -o jsonpath="{.data.GF_SECURITY_ADMIN_PASSWORD}" | base64 --decode
 echo
