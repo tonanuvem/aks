@@ -34,8 +34,19 @@ helm upgrade fiap-release ./fiap-chart
 
 #	Utilização de repositórios de Helm (públicos e privados):
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm search repo bitnami/nginx
-helm install my-bitnami-nginx bitnami/nginx
+
+# Prometheus
+helm search repo bitnami/kube-prometheus
+helm install prometheus bitnami/kube-prometheus
+kubectl port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
+
+# Grafana
+helm install grafana bitnami/grafana -f grafana_values.yaml
+# Obter a senha do admin do Grafana
+kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode
+echo
+kubectl port-forward svc/grafana 3000:3000
+
 
 # Modulo 2.	Estratégias de CI/CD com Azure DevOps e AKS
 # Conceitos de CI/CD: integração contínua, entrega contínua e deployment contínuo.
