@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpu-app
+spec:
+  template:
+    spec:
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gpu"
+        effect: "NoSchedule"
+      nodeSelector:
+        nodetype: gpu
+      containers:
+      - name: gpu-app
+        image: minha-imagem-gpu
