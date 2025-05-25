@@ -1,18 +1,18 @@
 # Modulo 1:	Implementação de Helm Charts no AKS
 #	Criação de um Helm Chart básico para uma aplicação de exemplo:
-helm create my-nginx-chart
+helm create fiap-chart
 
 # Customização do Chart utilizando valores e templates, editar: 
 
-  # > my-nginx-chart/values.yaml e 
-  # > my-nginx-chart/templates/deployment.yaml
+  # > fiap-chart/values.yaml e 
+  # > fiap-chart/templates/deployment.yaml
   
 # Instalação do Chart no AKS:
-helm install my-nginx-release ./my-nginx-chart
+helm install fiap-release ./fiap-chart
 
 # Upgrade do Chart:
 # Modificar o Chart (e.g., versão da imagem)
-helm upgrade my-nginx-release ./my-nginx-chart
+helm upgrade fiap-release ./fiap-chart
 
 #	Utilização de repositórios de Helm (públicos e privados):
 helm repo add bitnami https://charts.bitnami.com/bitnami
