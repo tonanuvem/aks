@@ -29,14 +29,13 @@ HOST="$IP.sslip.io"
 echo $HOST
 
 # Substituir HOST no YAML do INGRESS usando envsubst
+# Aplicar o Ingress:
 
 export HOST
 # envsubst < ingress-ssl.yaml | kubectl apply -f -
 envsubst < ingress-ssl.yaml > ingress-ssl-final.yaml
 kubectl apply -f ingress-ssl-final.yaml
 
-# Aplicar o Ingress:
-kubectl apply -f ingress-ssl.yaml
 
 # Obter o endereço do Ingress Controller:
 kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
