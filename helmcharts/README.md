@@ -73,8 +73,8 @@
 
  -	Análise de custos no Azure Cost Management:
  -	Acessar o Azure Cost Management no portal:
-  1.	Navegue até o grupo de recursos ou assinatura do AKS no portal do Azure.
-  2.	No menu à esquerda, selecione "Análise de custos".
+    -	Navegue até o grupo de recursos ou assinatura do AKS no portal do Azure.
+    -	No menu à esquerda, selecione "Análise de custos".
  -	Interpretar os dados de custo:
     -	Filtre os custos por serviço (Kubernetes Service) e dimensão (Cluster Name, Node Pool).
     -	Analise os gráficos e tabelas para identificar os principais contribuintes para os custos.
