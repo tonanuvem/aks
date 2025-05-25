@@ -1,0 +1,7 @@
+admin:
+  user: fiap
+  password: fiap
+
+service:
+  type: ClusterIP
+  port: 80
