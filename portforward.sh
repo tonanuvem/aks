@@ -24,14 +24,18 @@ start_port_forward() {
 
 list_active_port_forwards() {
   echo "Port-forwards ativos (PID):"
-  if [ -f "$port_forwards_pids_file" ]; then
-    while read pid; do
-      ps -p "$pid" -o pid,cmd --no-headers 2>/dev/null
-    done < "$port_forwards_pids_file"
-  else
-    echo "Nenhum port-forward ativo registrado."
+  
+  # Pega todos os processos com 'kubectl port-forward'
+  # Exclui a linha do próprio grep (com grep -v)
+  # Formata: PID e comando completo
+  ps aux | grep "[k]ubectl port-forward" | awk '{print $2, substr($0, index($0,$11))}'
+
+  # Se quiser uma mensagem quando não achar nenhum
+  if ! ps aux | grep -q "[k]ubectl port-forward"; then
+    echo "  Nenhum port-forward ativo encontrado."
   fi
 }
+
 
 kill_all_port_forwards() {
   if [ -f "$port_forwards_pids_file" ]; then
