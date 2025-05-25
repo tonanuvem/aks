@@ -11,9 +11,9 @@ spec:
   tls:
   - secretName: tls-secret
     hosts: # Substitua por um domínio válido ou o IP do seu Ingress Controller
-    - ${HOST} 
+    - ${HOST_SSL} 
   rules:  # Substitua
-  - host: ${HOST} 
+  - host: ${HOST_SSL} 
     http:
       paths:
       - path: /
