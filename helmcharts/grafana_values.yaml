@@ -2,6 +2,16 @@ admin:
   user: fiap
   password: fiap
 
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus-server
+        isDefault: true
+
 service:
   type: ClusterIP
   port: 80
