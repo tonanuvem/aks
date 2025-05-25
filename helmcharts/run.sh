@@ -25,7 +25,7 @@ export CONTAINER_PORT=$(kubectl get pod --namespace default $POD_NAME -o jsonpat
 echo "Visit http://$IP:8080 to use your application"
 kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
 
-cp exemplo_values.yml fiap-chart/values.yaml
+cp exemplo_values.yaml fiap-chart/values.yaml
 
 # Upgrade do Chart:
 # Modificar o Chart (e.g., versão da imagem)
