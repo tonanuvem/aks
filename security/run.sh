@@ -41,6 +41,7 @@ kubectl apply -f ingress-http-final.yaml
 envsubst < ingress-ssl.yaml > ingress-ssl-final.yaml
 kubectl apply -f ingress-ssl-final.yaml
 
+kubectl get ingress -n default
 
 # Obter o endereço do Ingress Controller:
 kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
