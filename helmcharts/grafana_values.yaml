@@ -18,5 +18,5 @@ service:
 
 grafana.ini:
   server:
-    root_url: "%(protocol)s://%(domain)s:%(http_port)s/"
+    root_url: "http://${HOST}:8099/proxy/3000/"
     serve_from_sub_path: false
