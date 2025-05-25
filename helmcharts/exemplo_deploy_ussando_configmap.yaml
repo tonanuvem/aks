@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minha-app
+spec:
+  containers:
+  - name: minha-app
+    image: minha-imagem
+    env:
+    - name: CHAVE1
+      valueFrom:
+        configMapKeyRef:
+          name: app-config-map # ConfigMap criado a partir do App Configuration
+          key: chave1
+    - name: CHAVE2
+      valueFrom:
+        configMapKeyRef:
+          name: app-config-map
+          key: chave2
