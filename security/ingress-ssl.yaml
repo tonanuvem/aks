@@ -7,6 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     # essa anotacao desabilita o redirect automatico do http para https
 spec:
+  ingressClassName: nginx # Define o Ingress Controller
   tls:
   - secretName: tls-secret
     hosts: # Substitua por um domínio válido ou o IP do seu Ingress Controller
