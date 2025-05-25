@@ -42,7 +42,8 @@ kubectl port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
 
 # Grafana
 IP=$(curl checkip.amazonaws.com)
-export HOST
+HOST_GRAFANA="grafana.$IP.sslip.io"
+export HOST_GRAFANA
 envsubst < grafana_values.yaml > grafana_values-final.yaml
 helm install grafana bitnami/grafana -f grafana_values-final.yaml
 # Obter a senha do admin do Grafana 
