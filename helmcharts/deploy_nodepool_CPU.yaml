@@ -1,0 +1,13 @@
+# Exemplo de Deployment para agendar no pool de CPU
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-app
+spec:
+  template:
+    spec:
+      nodeSelector:
+        nodetype: cpu
+      containers:
+      - name: cpu-app
+        image: minha-imagem-cpu
