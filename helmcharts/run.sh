@@ -62,6 +62,41 @@ kubectl port-forward svc/grafana 3000:3000
 #	Integração com o Helm para automatizar a instalação de Charts (utilizando o HelmDeploy task).
 # Implementação de testes automatizados no pipeline de CI/CD (adicionando tasks de teste, como CmdLine para executar testes unitários).
 
+# > Criar um Projeto no Azure DevOps (via Portal): https://dev.azure.com
+# > Criar nova Organização em https://aex.dev.azure.com/me?mkt=pt-BR
+# > Create a project to get started em https://dev.azure.com/alunofiap/
+
+az devops configure --defaults organization=https://dev.azure.com/SEU_ORG
+az devops project create --name "fiap"
+az repos create --name fiap --project "fiap"
+
+# Criar Service Principal via CLI (usado para Service Connection) >> definir SUBSCRIPTION_ID
+# az ad sp create-for-rbac --name "devops-aks-sp" --role contributor --scopes /subscriptions/<SUB_ID>/resourceGroups/<RESOURCE_GROUP>
+
+az ad sp create-for-rbac --name fiap-aks-sp --role contributor  --scopes /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/fiap-rg --sdk-auth
+
+# Criar Service Connection no Azure DevOps (semi-automático). A criação deve ser feita via portal Azure DevOps:
+# Passos:
+#    Acesse seu projeto no Azure DevOps.
+#    Vá em Project Settings → Service connections.
+#    Clique em New service connection → escolha Azure Resource Manager → opção Service principal (manual).
+#    Cole o JSON gerado pelo comando acima.
+#    Dê um nome à conexão, por exemplo: conexao-azure.
+
+# git clone https://dev.azure.com/ORGANIZACAO/PROJETO/_git/PROJETO
+git clone https://dev.azure.com/alunofiap/fiap/_git/fiap
+cd fiap
+
+# Adicione seus arquivos (manifests, charts, código app), depois:
+git add .
+git commit -m "Commit inicial"
+git push origin main
+
+# Commitar o pipeline
+git add azure-pipelines.yml
+git commit -m "Pipeline CI/CD com Helm e AKS"
+git push origin main
+
 cat k8s_cicd.yaml
 
 # Modulo 3.	Gerenciamento de Configuração com Azure App Configuration
