@@ -1,110 +1,129 @@
-#!/bin/bash
-
-LOG_FILE="/tmp/portforward.log"
-> "$LOG_FILE"
+#!/bin/sh
 
 IP=$(curl -s checkip.amazonaws.com)
 
-function listar_servicos() {
-  echo "🔍 Listando serviços disponíveis em todos os namespaces..."
-  kubectl get svc --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,PORTS:.spec.ports[*].port --no-headers
+list_namespaces() {
+  kubectl get ns -o jsonpath='{range .items[*]}{.metadata.name} {end}'
 }
 
-function escolher_servico_especifico() {
-  echo "➡️ Escolha o namespace:"
-  kubectl get ns --no-headers | awk '{print NR ") " $1}'
-  read -p "Digite o número do namespace: " ns_idx
-
-  SELECTED_NS=$(kubectl get ns --no-headers | awk "NR==$ns_idx {print \$1}")
-  echo "Selecionado namespace: $SELECTED_NS"
-
-  echo "➡️ Escolha o serviço:"
-  kubectl get svc -n "$SELECTED_NS" --no-headers | awk '{print NR ") " $1}'
-  read -p "Digite o número do serviço: " svc_idx
-
-  SELECTED_SVC=$(kubectl get svc -n "$SELECTED_NS" --no-headers | awk "NR==$svc_idx {print \$1}")
-  echo "Selecionado serviço: $SELECTED_SVC"
-
-  exportar_servico "$SELECTED_NS" "$SELECTED_SVC"
+list_services() {
+  ns=$1
+  kubectl get svc -n "$ns" -o jsonpath='{range .items[*]}{.metadata.name}:{.spec.ports[0].port} {end}'
 }
 
-function exportar_servico() {
-  local ns="$1"
-  local svc="$2"
+port_forwards_pids_file="/tmp/k8s-port-forward-pids.txt"
 
-  PORTS_JSON=$(kubectl get svc "$svc" -n "$ns" -o jsonpath="{.spec.ports[*].port}")
-  PORTS=($PORTS_JSON)
-
-  PORT_FORWARD_ARGS=""
-  for PORT in "${PORTS[@]}"; do
-    LOCAL_PORT=$((PORT + RANDOM % 1000 + 10000))
-    PORT_FORWARD_ARGS+="$LOCAL_PORT:$PORT "
-    echo "$svc in $ns → http://$IP:$LOCAL_PORT (port $PORT)" >> "$LOG_FILE"
-  done
-
-  echo "🌐 Port-forward $svc ($ns): ${PORTS[*]}"
-  kubectl port-forward svc/"$svc" $PORT_FORWARD_ARGS -n "$ns" >/dev/null 2>&1 &
+start_port_forward() {
+  ns=$1
+  svc=$2
+  port=$3
+  echo "Expondo $svc no namespace $ns na porta $port -> local $IP:$port"
+  kubectl port-forward -n "$ns" "svc/$svc" "$port:$port" >/dev/null 2>&1 &
+  echo "$!" >> "$port_forwards_pids_file"
 }
 
-function exportar_todos_servicos_namespace() {
-  echo "➡️ Escolha o namespace:"
-  kubectl get ns --no-headers | awk '{print NR ") " $1}'
-  read -p "Digite o número do namespace: " ns_idx
-
-  SELECTED_NS=$(kubectl get ns --no-headers | awk "NR==$ns_idx {print \$1}")
-  echo "Selecionado namespace: $SELECTED_NS"
-
-  for svc in $(kubectl get svc -n "$SELECTED_NS" --no-headers | awk '{print $1}'); do
-    exportar_servico "$SELECTED_NS" "$svc"
-  done
-}
-
-function exportar_todos_servicos_todos_namespaces() {
-  for ns in $(kubectl get ns --no-headers | awk '{print $1}'); do
-    for svc in $(kubectl get svc -n "$ns" --no-headers | awk '{print $1}'); do
-      exportar_servico "$ns" "$svc"
-    done
-  done
-}
-
-function encerrar_todos_os_portforwards() {
-  echo "🛑 Encerrando todos os port-forwards..."
-  PIDS=$(ps aux | grep "kubectl port-forward" | grep -v grep | awk '{print $2}')
-  if [ -z "$PIDS" ]; then
-    echo "Nenhum processo kubectl port-forward encontrado."
+list_active_port_forwards() {
+  echo "Port-forwards ativos (PID):"
+  if [ -f "$port_forwards_pids_file" ]; then
+    while read pid; do
+      ps -p "$pid" -o pid,cmd --no-headers 2>/dev/null
+    done < "$port_forwards_pids_file"
   else
-    echo "$PIDS" | xargs kill
-    echo "Todos os port-forwards encerrados."
-    > "$LOG_FILE"
+    echo "Nenhum port-forward ativo registrado."
   fi
 }
 
-function mostrar_menu() {
-  echo
-  echo "============================"
-  echo "  Port-Forward Automático  "
-  echo "============================"
-  echo "IP Público: $IP"
-  echo "1) Expor serviço específico"
-  echo "2) Expor todos serviços de um namespace"
-  echo "3) Expor todos serviços de todos os namespaces"
-  echo "4) Listar serviços já expostos"
-  echo "5) Encerrar todos os serviços expostos"
-  echo "0) Sair"
-  echo "----------------------------"
-  read -p "Escolha uma opção: " opcao
-
-  case $opcao in
-    1) escolher_servico_especifico ;;
-    2) exportar_todos_servicos_namespace ;;
-    3) exportar_todos_servicos_todos_namespaces ;;
-    4) echo -e "\n🌐 Serviços já expostos via port-forward:"; column -t "$LOG_FILE";;
-    5) encerrar_todos_os_portforwards ;;
-    0) echo "Encerrando..."; exit 0 ;;
-    *) echo "Opção inválida!";;
-  esac
+kill_all_port_forwards() {
+  if [ -f "$port_forwards_pids_file" ]; then
+    while read pid; do
+      echo "Matando port-forward PID $pid"
+      kill "$pid" 2>/dev/null
+    done < "$port_forwards_pids_file"
+    rm -f "$port_forwards_pids_file"
+  else
+    echo "Nenhum port-forward para matar."
+  fi
 }
 
-while true; do
-  mostrar_menu
-done
+main_menu() {
+  while true; do
+    echo ""
+    echo "1) Listar namespaces"
+    echo "2) Listar serviços de um namespace e expor selecionados"
+    echo "3) Expor todos os serviços de um namespace"
+    echo "4) Expor todos os serviços de todos os namespaces"
+    echo "5) Listar port-forwards ativos"
+    echo "6) Encerrar todos port-forwards"
+    echo "0) Sair"
+    echo -n "Escolha uma opção: "
+    read opt
+
+    case "$opt" in
+      1)
+        echo "Namespaces disponíveis:"
+        list_namespaces | tr ' ' '\n'
+        ;;
+      2)
+        echo -n "Digite o namespace: "
+        read ns
+        echo "Serviços em $ns:"
+        svcs=$(list_services "$ns")
+        if [ -z "$svcs" ]; then
+          echo "Nenhum serviço encontrado."
+          continue
+        fi
+        i=1
+        for svc_port in $svcs; do
+          svc=$(echo "$svc_port" | cut -d: -f1)
+          port=$(echo "$svc_port" | cut -d: -f2)
+          echo "$i) $svc (porta $port)"
+          i=$((i + 1))
+        done
+        echo -n "Digite o número do serviço para expor (ou 0 para cancelar): "
+        read svc_choice
+        if [ "$svc_choice" -eq 0 ]; then
+          continue
+        fi
+        selected_svc_port=$(echo $svcs | cut -d' ' -f "$svc_choice")
+        svc=$(echo "$selected_svc_port" | cut -d: -f1)
+        port=$(echo "$selected_svc_port" | cut -d: -f2)
+        start_port_forward "$ns" "$svc" "$port"
+        ;;
+      3)
+        echo -n "Digite o namespace: "
+        read ns
+        svcs=$(list_services "$ns")
+        for svc_port in $svcs; do
+          svc=$(echo "$svc_port" | cut -d: -f1)
+          port=$(echo "$svc_port" | cut -d: -f2)
+          start_port_forward "$ns" "$svc" "$port"
+        done
+        ;;
+      4)
+        for ns in $(list_namespaces); do
+          svcs=$(list_services "$ns")
+          for svc_port in $svcs; do
+            svc=$(echo "$svc_port" | cut -d: -f1)
+            port=$(echo "$svc_port" | cut -d: -f2)
+            start_port_forward "$ns" "$svc" "$port"
+          done
+        done
+        ;;
+      5)
+        list_active_port_forwards
+        ;;
+      6)
+        kill_all_port_forwards
+        ;;
+      0)
+        echo "Saindo."
+        exit 0
+        ;;
+      *)
+        echo "Opção inválida."
+        ;;
+    esac
+  done
+}
+
+main_menu
