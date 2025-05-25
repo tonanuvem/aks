@@ -42,9 +42,10 @@ kubectl port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
 
 # Grafana
 helm install grafana bitnami/grafana -f grafana_values.yaml
-# Obter a senha do admin do Grafana
-kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode
+# Obter a senha do admin do Grafana 
+kubectl get secret --namespace default grafana-admin -o jsonpath="{.data.GF_SECURITY_ADMIN_PASSWORD}" | base64 --decode
 echo
+echo "Senha do Grafana = fiap"
 kubectl port-forward svc/grafana 3000:3000
 
 
