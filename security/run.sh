@@ -30,12 +30,16 @@ sh wait-for-lb-ip.sh ingress-nginx-controller ingress-nginx
 
 IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 HOST="$IP.sslip.io"
+HOST_HTTP="www.$IP.sslip.io"
+HOST_SSL="ssl.$IP.sslip.io"
 echo $HOST
 
 # Substituir HOST no YAML do INGRESS usando envsubst
 # envsubst < ingress-ssl.yaml | kubectl apply -f -
 
 export HOST
+export HOST_HTTP
+export HOST_SSL
 
 # Aplicar o Ingress:
 
@@ -44,6 +48,10 @@ kubectl apply -f ingress-http-final.yaml
 
 envsubst < ingress-ssl.yaml > ingress-ssl-final.yaml
 kubectl apply -f ingress-ssl-final.yaml
+
+
+envsubst < ingress-completo.yaml > ingress-ssl-final.yaml
+kubectl apply -f ingress-completo-final.yaml
 
 kubectl get ingress -n default
 
