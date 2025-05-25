@@ -1,0 +1,18 @@
+# Exemplo de LimitRange
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-mem-limit-range
+  namespace: meu-namespace
+spec:
+  limits:
+  - type: Container
+    defaultRequest:
+      cpu: 100m
+      memory: 256Mi
+    default:
+      cpu: 500m
+      memory: 512Mi
+    max:
+      cpu: "1"
+      memory: 1Gi
