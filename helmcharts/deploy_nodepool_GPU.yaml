@@ -3,7 +3,14 @@ kind: Deployment
 metadata:
   name: gpu-app
 spec:
+  replicas: 1 # Adicionado: Número de réplicas do seu pod.
+  selector:
+    matchLabels:
+      app: gpu-app # Adicionado: Seletor para identificar os pods gerenciados por este Deployment.
   template:
+    metadata:
+      labels:
+        app: gpu-app # Adicionado: Labels para o pod, usados pelo Service para roteamento.
     spec:
       tolerations:
       - key: "sku"
@@ -11,7 +18,23 @@ spec:
         value: "gpu"
         effect: "NoSchedule"
       nodeSelector:
-        nodetype: gpu
+        nodetype: gpu # Garante que o pod seja agendado em um nó com label 'nodetype: gpu'.
       containers:
       - name: gpu-app
-        image: tonanuvem/python-env-app
+        image: tonanuvem/python-env-app:linux
+        ports:
+        - containerPort: 5000 # Adicionado: A porta em que a aplicação dentro do container escuta.
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gpu-app-service # Nome do serviço para a aplicação GPU.
+spec:
+  selector:
+    app: gpu-app # O seletor deve corresponder aos labels do pod do Deployment.
+  ports:
+  - protocol: TCP
+    port: 8060         # A porta que o LoadBalancer vai expor publicamente (externamente).
+    targetPort: 5000   # A porta do container onde a aplicação GPU está escutando (deve ser a mesma do containerPort).
+  type: ClusterIP
