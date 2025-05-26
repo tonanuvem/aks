@@ -10,4 +10,4 @@ spec:
         nodetype: cpu
       containers:
       - name: cpu-app
-        image: minha-imagem-cpu
+        image: tonanuvem/fiap_page
