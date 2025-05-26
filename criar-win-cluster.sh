@@ -1,3 +1,4 @@
+# Central India: Atualmente, é uma das regiões mais baratas, com um preço médio por hora significativamente inferior ao de outras regiões.
 az group create --name akstraining-rg-win --location centralindia
 
 # Verificar todas as regiões disponíveis na Azure:
