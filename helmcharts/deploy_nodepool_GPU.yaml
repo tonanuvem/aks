@@ -14,4 +14,4 @@ spec:
         nodetype: gpu
       containers:
       - name: gpu-app
-        image: minha-imagem-gpu
+        image: tonanuvem/python-env-app
