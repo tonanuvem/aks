@@ -25,5 +25,5 @@ jobs:
         push: true
         tags: |
           tonanuvem/python-app-env:linux
-          tonanuvem/python-app-env:linux-${{ github.run_id }}
+          #tonanuvem/python-app-env:linux-${{ github.run_id }}
         platforms: linux/amd64
