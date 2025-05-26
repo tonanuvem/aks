@@ -55,14 +55,12 @@ echo "Senha do Grafana = fiap"
 kubectl port-forward svc/grafana 3000:3000
 
 ##################################################################
-
 # Modulo 2.	Estratégias de CI/CD com Azure DevOps e AKS : FALHA NA PERMISSÃO DO AZURE STUDENTS.
 # Conceitos de CI/CD: integração contínua, entrega contínua e deployment contínuo.
 #	Integração do Azure DevOps com AKS: agentes, pipelines e conexões de serviço.
 #	Automação do processo de build, teste e deployment de aplicações no AKS.
 #	Integração com o Helm para automatizar a instalação de Charts (utilizando o HelmDeploy task).
 # Implementação de testes automatizados no pipeline de CI/CD (adicionando tasks de teste, como CmdLine para executar testes unitários).
-
 # > Criar um Projeto no Azure DevOps (via Portal): https://dev.azure.com
 # > Criar nova Organização em https://aex.dev.azure.com/me?mkt=pt-BR
 # > Create a project to get started em https://dev.azure.com/alunofiap/
@@ -124,9 +122,9 @@ git commit -m "Pipeline CI/CD com Helm e AKS"
 git push origin main
 
 cat azure-pipelines.yml
-
 ##################################################################
 
+##################################################################
 # Modulo 3.	Gerenciamento de Configuração com Azure App Configuration
 #	Introdução ao Azure App Configuration: conceitos e benefícios.
 #	Armazenamento e gerenciamento centralizado de configurações de aplicações.
@@ -177,50 +175,56 @@ kubectl describe configmap fiap-env-vars
 kubectl rollout restart deployment python-env-app
 
 ##################################################################
-
-## Modulo 4.	Práticas de Blue/Green Deployment e Canary Releases
+## Modulo 4.	Práticas de Blue/Green Deployment e Canary Releases : Já executado em outro LAB.
 #	Implementação de uma estratégia de Blue/Green Deployment para uma aplicação no AKS.
-
 #	Deploy da versão "blue" da aplicação:
-kubectl apply -f deployment-blue.yaml # YAML com a versão blue
-
+#kubectl apply -f deployment-blue.yaml # YAML com a versão blue
 #	Deploy da versão "green" da aplicação:
-kubectl apply -f deployment-green.yaml # YAML com a versão green
-
+#kubectl apply -f deployment-green.yaml # YAML com a versão green
 #	Criação de um serviço para rotear o tráfego para a versão "blue":
-kubectl apply -f service-blue.yaml
-
+#kubectl apply -f service-blue.yaml
 #	Modificação do serviço para rotear o tráfego para a versão "green":
-kubectl apply -f service-green.yaml
-
+#kubectl apply -f service-green.yaml
 #	Utilização de seletores para controlar o tráfego entre as versões da aplicação.
 #	Implementação de uma estratégia de Canary Release para uma aplicação no AKS:
 #	Deploy da versão canary da aplicação (com um número menor de réplicas):
-kubectl apply -f deployment-canary.yaml
-
+#kubectl apply -f deployment-canary.yaml
 #	Utilização de um serviço com seletores para direcionar uma pequena porcentagem de tráfego 
 # para a versão canary (e.g., utilizando um Ingress com pesos de tráfego 
-
 #	Monitoramento e rollback 
-kubectl rollout undo deployment/nome-do-deployment
+#kubectl rollout undo deployment/nome-do-deployment
+##################################################################
 
 ##################################################################
 ## Modulo 5 : HPA : Já executado em outro LAB.
 ##################################################################
 
+##################################################################
 ## Modulo 6.	Configuração de Node Pools e Node Selectors
-
+##################################################################
 #	Criação e gerenciamento de múltiplos Node Pools.
 
-az aks nodepool add --cluster-name nome-do-cluster --resource-group nome-do-grupo-de-recursos --name pool-cpu --node-vm-size Standard_DS2_v2 --labels nodetype=cpu
+az aks list --query "[].{name:name, resourceGroup:resourceGroup}" -o table
+CLUSTER_INFO=$(az aks list --query "[0]" -o json)
+CLUSTER_NAME=$(echo "$CLUSTER_INFO" | jq -r '.name')
+RESOURCE_GROUP=$(echo "$CLUSTER_INFO" | jq -r '.resourceGroup')
+echo "Cluster Name: $CLUSTER_NAME"
+echo "Resource Group: $RESOURCE_GROUP"
 
-az aks nodepool add --cluster-name nome-do-cluster --resource-group nome-do-grupo-de-recursos --name pool-gpu --node-vm-size Standard_NC6 --labels nodetype=gpu --taints sku=gpu:NoSchedule
+NOME_APP_CONFIG="fiap-app-config"
+echo $NOME_APP_CONFIG
+
+az aks nodepool add --cluster-name $CLUSTER_NAME --resource-group $RESOURCE_GROUP --name pool-cpu --node-vm-size Standard_B2s --node-count 1 --labels nodetype=cpu
+
+az aks nodepool add --cluster-name $CLUSTER_NAME --resource-group $RESOURCE_GROUP --name pool-gpu --node-vm-size Standard_NC4as_T4_v3 --node-count 1 --labels nodetype=gpu --taints sku=gpu:NoSchedule
 
 #	Utilização de Node Selectors e Taints/Tolerations para agendar pods em Node Pools específicos.
 
 echo "No exemplo acima, o pool pool-cpu tem o label nodetype=cpu, e o pool pool-gpu tem o label nodetype=gpu e o taint sku=gpu:NoSchedule."
 
 #	Agendamento de diferentes aplicações em Node Pools específicos:
+# Como usar esses node pools
+# No seu deployment Kubernetes, especifique no manifest qual node pool quer usar via nodeSelector:
 
 kubectl apply -f deploy_nodepool_CPU.yaml
 
@@ -228,7 +232,7 @@ kubectl apply -f deploy_nodepool_GPU.yaml
 
 # Escalonamento de Node Pools:
 
-az aks nodepool scale --cluster-name nome-do-cluster --resource-group nome-do-grupo-de-recursos --name pool-cpu --node-count 3
+az aks nodepool scale --cluster-name $CLUSTER_NAME --resource-group $RESOURCE_GROUP --name pool-cpu --node-count 3
 
 
 ##################################################################
@@ -247,5 +251,5 @@ kubectl apply -f custo_limit_range.yaml
 #	Utilização de Spot VMs para executar cargas de trabalho tolerantes a falhas:
 #	Criação de um Node Pool com Spot VMs.
  
-az aks nodepool add --cluster-name nome-do-cluster --resource-group nome-do-grupo-de-recursos --name spotpool --node-vm-size Standard_DS2_v2 --priority Spot --eviction-policy Delete
+az aks nodepool add --cluster-name $CLUSTER_NAME --resource-group $RESOURCE_GROUP --name spotpool --node-vm-size Standard_DS2_v2 --priority Spot --eviction-policy Delete
 
