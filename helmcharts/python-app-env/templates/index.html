@@ -7,6 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
 </head>
 <body>
+
 <nav class="teal lighten-2 z-depth-1">
     <div class="nav-wrapper container">
         <a href="#" class="brand-logo center">
@@ -24,10 +25,16 @@
                         <i class="material-icons teal-text text-lighten-1">settings</i>
                         Detalhes das Variáveis
                     </span>
-                    <p>Aqui estão as variáveis de ambiente configuradas (em memória do app):</p>
+                    <p>
+                        {% if mostrar_todas %}
+                            Listando <strong>todas</strong> as variáveis de ambiente:
+                        {% else %}
+                            Apenas <strong>chave1</strong> e <strong>chave2</strong> estão visíveis.
+                        {% endif %}
+                    </p>
                     <div class="divider" style="margin: 15px 0;"></div>
                     <ul class="collection with-header">
-                        <li class="collection-header"><h5>Suas Variáveis</h5></li>
+                        <li class="collection-header"><h5>Variáveis</h5></li>
                         {% for key, value in env_vars.items() %}
                             <li class="collection-item">
                                 <strong>{{ key }}:</strong>
@@ -38,17 +45,9 @@
                 </div>
 
                 <div class="card-content">
-                    <form method="POST" action="{{ url_for('set_env_var') }}">
-                        <div class="input-field">
-                            <input id="key" name="key" type="text" required>
-                            <label for="key">Nome da Variável</label>
-                        </div>
-                        <div class="input-field">
-                            <input id="value" name="value" type="text" required>
-                            <label for="value">Valor da Variável</label>
-                        </div>
+                    <form method="GET" action="{{ url_for('list_env_var') }}">
                         <button type="submit" class="waves-effect waves-light btn teal lighten-1">
-                            <i class="material-icons left">save</i>Salvar Variável
+                            <i class="material-icons left">visibility</i>Listar Todas as Variáveis
                         </button>
                     </form>
                 </div>
