@@ -132,19 +132,41 @@ cat azure-pipelines.yml
 #	Armazenamento e gerenciamento centralizado de configurações de aplicações.
 #	Integração do App Configuration com aplicações em execução no AKS.
 
-az appconfig create --name nome-do-app-config --resource-group nome-do-grupo-de-recursos --location eastus
+az aks list --query "[].{name:name, resourceGroup:resourceGroup}" -o table
+CLUSTER_INFO=$(az aks list --query "[0]" -o json)
+CLUSTER_NAME=$(echo "$CLUSTER_INFO" | jq -r '.name')
+RESOURCE_GROUP=$(echo "$CLUSTER_INFO" | jq -r '.resourceGroup')
+echo "Cluster Name: $CLUSTER_NAME"
+echo "Resource Group: $RESOURCE_GROUP"
 
-az appconfig kv set --name nome-do-app-config --key chave1 --value valor1
-az appconfig kv set --name nome-do-app-config --key chave2 --value valor2 --content-type "application/json"
+NOME_APP_CONFIG="fiap-app-config"
+echo $NOME_APP_CONFIG
 
-kubectl apply -f exemplo_deploy_ussando_configmap.yaml
+az appconfig create --name $NOME_APP_CONFIG --resource-group $RESOURCE_GROUP --location eastus
+
+az appconfig kv set --name $NOME_APP_CONFIG --key chave1 --value valor1
+az appconfig kv set --name $NOME_APP_CONFIG --key chave2 --value valor2 --content-type "application/json"
+
+# Obter valores para um ConfigMap no AKS
+chave1=$(az appconfig kv show --name $NOME_APP_CONFIG --key chave1 --query value -o tsv)
+chave2=$(az appconfig kv show --name $NOME_APP_CONFIG --key chave2 --query value -o tsv)
+echo "Chaves Recuperadas do App Configuration"
+echo $chave1
+echo $chave1
+# Cria o ConfigMap com as chaves recuperadas
+kubectl create configmap flask-env-vars \
+  --from-literal=chave1="$chave1" \
+  --from-literal=chave2="$chave2"
+
+
+kubectl apply -f exemplo_deploy_usando_configmap.yaml
 
 #	Atualização dinâmica das configurações da aplicação sem necessidade de rebuild ou restart:
 #	Demonstrar como uma alteração no App Configuration é refletida na aplicação.
 #	Exemplo: Modifique um valor no App Configuration e observe a mudança na aplicação em execução no AKS.
 
-az appconfig kv set --name nome-do-app-config --key chave1 --value mudou_valor1
-az appconfig kv set --name nome-do-app-config --key chave2 --value mudou_valor2 --content-type "application/json"
+az appconfig kv set --name $NOME_APP_CONFIG --key chave1 --value mudou_valor1
+az appconfig kv set --name $NOME_APP_CONFIG --key chave2 --value mudou_valor2 --content-type "application/json"
 
 ##################################################################
 
