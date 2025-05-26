@@ -31,5 +31,5 @@ spec:
   ports:
   - protocol: TCP
     port: 8050         # Porta que o Service vai expor
-    targetPort: 80   # Porta do container (containerPort)
+    targetPort: 5000   # Porta do container (containerPort)
   type: ClusterIP     # Pode ajustar para NodePort ou LoadBalancer se desejar acesso externo
