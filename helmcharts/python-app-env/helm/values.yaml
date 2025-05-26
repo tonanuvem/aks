@@ -7,5 +7,5 @@ service:
   port: 80
 
 env:
-  chave1: "valor1"
-  chave2: "valor2"
+  chave1: "valor 1 definido no arquivo values.yaml"
+  chave2: "valor 2 definido no arquivo values.yaml"
