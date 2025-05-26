@@ -11,6 +11,7 @@ az aks create \
   --resource-group akstraining-rg-win \
   --name akstraining-cluster-win \
   --node-count 1 \
+  --node-vm-size Standard_B2s \
   --enable-addons monitoring \
   --generate-ssh-keys \
   --windows-admin-username fiap \
