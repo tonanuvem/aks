@@ -1,12 +1,19 @@
-# Exemplo de Deployment para agendar no pool de CPU
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cpu-app
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpu-app
   template:
+    metadata:
+      labels:
+        app: cpu-app
     spec:
       nodeSelector:
+        kubernetes.io/os: windows
         nodetype: cpu
       containers:
       - name: cpu-app
