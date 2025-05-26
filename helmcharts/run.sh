@@ -54,6 +54,7 @@ echo
 echo "Senha do Grafana = fiap"
 kubectl port-forward svc/grafana 3000:3000
 
+##################################################################
 
 # Modulo 2.	Estratégias de CI/CD com Azure DevOps e AKS : FALHA NA PERMISSÃO DO AZURE STUDENTS.
 # Conceitos de CI/CD: integração contínua, entrega contínua e deployment contínuo.
@@ -124,6 +125,8 @@ git push origin main
 
 cat azure-pipelines.yml
 
+##################################################################
+
 # Modulo 3.	Gerenciamento de Configuração com Azure App Configuration
 #	Introdução ao Azure App Configuration: conceitos e benefícios.
 #	Armazenamento e gerenciamento centralizado de configurações de aplicações.
@@ -142,6 +145,8 @@ kubectl apply -f exemplo_deploy_ussando_configmap.yaml
 
 az appconfig kv set --name nome-do-app-config --key chave1 --value mudou_valor1
 az appconfig kv set --name nome-do-app-config --key chave2 --value mudou_valor2 --content-type "application/json"
+
+##################################################################
 
 ## Modulo 4.	Práticas de Blue/Green Deployment e Canary Releases
 #	Implementação de uma estratégia de Blue/Green Deployment para uma aplicação no AKS.
@@ -169,9 +174,9 @@ kubectl apply -f deployment-canary.yaml
 #	Monitoramento e rollback 
 kubectl rollout undo deployment/nome-do-deployment
 
-
-## Modulo 5 : HPA
-
+##################################################################
+## Modulo 5 : HPA : Já executado em outro LAB.
+##################################################################
 
 ## Modulo 6.	Configuração de Node Pools e Node Selectors
 
@@ -196,7 +201,7 @@ kubectl apply -f deploy_nodepool_GPU.yaml
 az aks nodepool scale --cluster-name nome-do-cluster --resource-group nome-do-grupo-de-recursos --name pool-cpu --node-count 3
 
 
-
+##################################################################
 
 ## Modulo 7.	Gerenciamento de Custos e Otimização de Recursos
 #	Visão geral dos custos do AKS.
