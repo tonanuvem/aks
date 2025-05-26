@@ -11,9 +11,9 @@ Existem dois tipos de políticas: Ingress (para tráfego de entrada nos Pods) e 
 
 Seu principal caso de uso é a segmentação de rede e o isolamento de aplicações ou namespaces. Por exemplo, permitir que Pods de frontend acessem apenas Pods de backend específicos, e que Pods de backend acessem apenas o banco de dados. São cruciais para a segurança, limitando a superfície de ataque e o movimento lateral caso um Pod seja comprometido.
 
-# Node Pools
+## Node Pools
 
-# Resumo
+### Resumo
 
 | VM                     | vCPUs | RAM    | GPU              | Uso típico                       | Preço  |
 |------------------------|-------|--------|------------------|---------------------------------|--------|
