@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import os
 
 app = Flask(__name__)
@@ -13,6 +13,7 @@ def show_env_vars():
 
 @app.route("/list_env_var")
 def list_env_var():
+    # Coleta todas as variáveis de ambiente
     env_vars = dict(os.environ)
     return render_template("index.html", env_vars=env_vars, mostrar_todas=True)
 
