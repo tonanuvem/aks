@@ -17,8 +17,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: 5000
-          env:
-            - name: chave1
-              value: "{{ .Values.env.chave1 }}"
-            - name: chave2
-              value: "{{ .Values.env.chave2 }}"
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configMapName }}
