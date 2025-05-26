@@ -16,7 +16,7 @@ spec:
         nodetype: cpu   # ou wincpu conforme label correto do node
       containers:
       - name: cpu-app
-        image: tonanuvem/python-env-app
+        image: tonanuvem/python-env-app:win
         ports:
         - containerPort: 80
 
