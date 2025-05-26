@@ -1,3 +1,4 @@
+# app_win.py
 from flask import Flask, render_template, request
 import os
 import platform
@@ -10,7 +11,6 @@ import socket
 app = Flask(__name__)
 
 def get_system_info():
-
     info = {}
 
     # Sistema Operacional
@@ -99,13 +99,17 @@ def show_env_vars():
         "chave2": os.getenv("chave2", "Variável chave2 não definida"),
     }
     system_info = get_system_info()
-    return render_template("index.html", env_vars=env_vars, system_info=system_info, mostrar_todas=False)
+    # Captura o caminho base do proxy (se houver)
+    base_url = request.script_root
+    return render_template("index.html", env_vars=env_vars, system_info=system_info, mostrar_todas=False, base_url=base_url)
 
 @app.route("/list_env_var")
 def list_env_var():
     env_vars = dict(os.environ)
     system_info = get_system_info()
-    return render_template("index.html", env_vars=env_vars, system_info=system_info, mostrar_todas=True)
+    # Captura o caminho base do proxy (se houver)
+    base_url = request.script_root
+    return render_template("index.html", env_vars=env_vars, system_info=system_info, mostrar_todas=True, base_url=base_url)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
