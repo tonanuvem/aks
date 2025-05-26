@@ -10,4 +10,4 @@ docker build -t $USUARIO/python-env-app:latest .
 
 # Login no DockerHub ou outro registry (ex: Azure Container Registry)
 echo "Caso queira publicar a imagem no Docker Hub, executar o comando abaixo:"
-echo "              docker push $USUARIO/flask-env-app:latest"
+echo "              docker push $USUARIO/python-env-app:latest"
