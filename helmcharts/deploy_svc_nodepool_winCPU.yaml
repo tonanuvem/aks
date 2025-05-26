@@ -30,6 +30,6 @@ spec:
     app: cpu-app
   ports:
   - protocol: TCP
-    port: 80         # Porta que o Service vai expor
+    port: 8050         # Porta que o Service vai expor
     targetPort: 80   # Porta do container (containerPort)
   type: ClusterIP     # Pode ajustar para NodePort ou LoadBalancer se desejar acesso externo
