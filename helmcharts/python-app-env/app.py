@@ -1,3 +1,4 @@
+# app.py
 from flask import Flask, render_template, request
 import os
 import platform
@@ -22,11 +23,18 @@ def get_system_info():
     # CPU
     info["CPU"] = "Desconhecido"
     try:
-        with open("/proc/cpuinfo") as f:
-            for line in f:
-                if "model name" in line:
-                    info["CPU"] = line.split(":")[1].strip()
-                    break
+        # Apenas Linux verifica /proc/cpuinfo
+        if platform.system() == "Linux" and os.path.exists("/proc/cpuinfo"):
+            with open("/proc/cpuinfo") as f:
+                for line in f:
+                    if "model name" in line:
+                        info["CPU"] = line.split(":")[1].strip()
+                        break
+        else: # Para Windows ou outro, usa platform.processor() ou variável de ambiente
+            cpu_name = platform.processor()
+            if not cpu_name:
+                cpu_name = os.environ.get("PROCESSOR_IDENTIFIER", "Desconhecido")
+            info["CPU"] = cpu_name
     except Exception as e:
         info["CPU"] = f"Erro ao obter CPU: {e}"
 
@@ -67,9 +75,11 @@ def get_system_info():
     # Container detection
     info["Em Container"] = False
     try:
-        if os.path.exists("/.dockerenv"):
+        if os.path.exists("/.dockerenv"): # Linux
             info["Em Container"] = True
-        else:
+        elif os.path.exists("C:\\.dockerenv"): # Windows
+            info["Em Container"] = True
+        elif os.path.exists("/proc/1/cgroup"):
             with open("/proc/1/cgroup") as f:
                 if any("docker" in line or "kubepods" in line for line in f):
                     info["Em Container"] = True
@@ -91,13 +101,17 @@ def show_env_vars():
         "chave2": os.getenv("chave2", "Variável chave2 não definida"),
     }
     system_info = get_system_info()
-    return render_template("index.html", env_vars=env_vars, system_info=system_info, mostrar_todas=False)
+    # Captura o caminho base do proxy (se houver)
+    base_url = request.script_root
+    return render_template("index.html", env_vars=env_vars, system_info=system_info, mostrar_todas=False, base_url=base_url)
 
 @app.route("/list_env_var")
 def list_env_var():
     env_vars = dict(os.environ)
     system_info = get_system_info()
-    return render_template("index.html", env_vars=env_vars, system_info=system_info, mostrar_todas=True)
+    # Captura o caminho base do proxy (se houver)
+    base_url = request.script_root
+    return render_template("index.html", env_vars=env_vars, system_info=system_info, mostrar_todas=True, base_url=base_url)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
