@@ -55,7 +55,7 @@ echo "Senha do Grafana = fiap"
 kubectl port-forward svc/grafana 3000:3000
 
 
-# Modulo 2.	Estratégias de CI/CD com Azure DevOps e AKS
+# Modulo 2.	Estratégias de CI/CD com Azure DevOps e AKS : FALHA NA PERMISSÃO DO AZURE STUDENTS.
 # Conceitos de CI/CD: integração contínua, entrega contínua e deployment contínuo.
 #	Integração do Azure DevOps com AKS: agentes, pipelines e conexões de serviço.
 #	Automação do processo de build, teste e deployment de aplicações no AKS.
@@ -73,13 +73,38 @@ az repos create --name fiap --project "fiap"
 # Criar Service Principal via CLI (usado para Service Connection) >> definir SUBSCRIPTION_ID
 # az ad sp create-for-rbac --name "devops-aks-sp" --role contributor --scopes /subscriptions/<SUB_ID>/resourceGroups/<RESOURCE_GROUP>
 
-az ad sp create-for-rbac --name fiap-aks-sp --role contributor  --scopes /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/fiap-rg --sdk-auth
+az aks list --query "[].{name:name, resourceGroup:resourceGroup}" -o table
+CLUSTER_INFO=$(az aks list --query "[0]" -o json)
+CLUSTER_NAME=$(echo "$CLUSTER_INFO" | jq -r '.name')
+RESOURCE_GROUP=$(echo "$CLUSTER_INFO" | jq -r '.resourceGroup')
+echo "Cluster Name: $CLUSTER_NAME"
+echo "Resource Group: $RESOURCE_GROUP"
+
+SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+echo "Subscription ID ativa: $SUBSCRIPTION_ID"
+
+az ad sp create-for-rbac --name $CLUSTER_NAME --role contributor  --scopes /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP --sdk-auth
 
 # Criar Service Connection no Azure DevOps (semi-automático). A criação deve ser feita via portal Azure DevOps:
 # Passos:
 #    Acesse seu projeto no Azure DevOps.
 #    Vá em Project Settings → Service connections.
-#    Clique em New service connection → escolha Azure Resource Manager → opção Service principal (manual).
+#    No menu lateral esquerdo (dentro de Project Settings), clique em "Service connections" (embaixo de PIPELINE).
+#    Clique em New service connection → escolha Azure Resource Manager.
+#    Na próxima tela de configuração, escolher (STEP 1 : NEW AZURE SERVICE CONNECTION):
+#        no Identity type   = APP REGISTRATION OR MANAGED IDENTITY (MANUAL) = 2o do Menu
+#        no Credential      = SECRET
+#        Em Enviroment deiar AZURE CLOUD e no Scope Level deixar "Subscription"
+#    Na próxima configuração, escolher :
+#        definir Subscription ID           = VALOR DO "subscriptionId" do comando anterior
+#        definir Subscription name	       = FiapSubscription
+#        definir Application (client) ID	 = VALOR DO "clientId" do comando anterior
+#        definir Directory (tenant) ID     = VALOR DO TENANTID do comando anterior
+#        deixar CREDENTIAL como Service principal key
+#        Marque a opção: ✅ Grant access permission to all pipelines
+#        definir Service Connection Name   = devops-aks
+#        Clique em Verify and save         = VERIFICAR SE HÁ ERRO NA VALIDAÇÃO
+
 #    Cole o JSON gerado pelo comando acima.
 #    Dê um nome à conexão, por exemplo: conexao-azure.
 
@@ -97,7 +122,7 @@ git add azure-pipelines.yml
 git commit -m "Pipeline CI/CD com Helm e AKS"
 git push origin main
 
-cat k8s_cicd.yaml
+cat azure-pipelines.yml
 
 # Modulo 3.	Gerenciamento de Configuração com Azure App Configuration
 #	Introdução ao Azure App Configuration: conceitos e benefícios.
