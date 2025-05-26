@@ -144,29 +144,37 @@ echo $NOME_APP_CONFIG
 
 az appconfig create --name $NOME_APP_CONFIG --resource-group $RESOURCE_GROUP --location eastus
 
-az appconfig kv set --name $NOME_APP_CONFIG --key chave1 --value valor1
-az appconfig kv set --name $NOME_APP_CONFIG --key chave2 --value valor2 --content-type "application/json"
+az appconfig kv set --name $NOME_APP_CONFIG --key chave1 --value "valor1 gravado no Azure App Configuration - Key Vault (KV)" --yes
+az appconfig kv set --name $NOME_APP_CONFIG --key chave2 --value '{"valor":"supervalorizado2"}' --content-type "application/json" --yes
+
+az appconfig kv list --name $NOME_APP_CONFIG
 
 # Obter valores para um ConfigMap no AKS
 chave1=$(az appconfig kv show --name $NOME_APP_CONFIG --key chave1 --query value -o tsv)
 chave2=$(az appconfig kv show --name $NOME_APP_CONFIG --key chave2 --query value -o tsv)
 echo "Chaves Recuperadas do App Configuration"
 echo $chave1
-echo $chave1
+echo $chave2
 # Cria o ConfigMap com as chaves recuperadas
-kubectl create configmap flask-env-vars \
+kubectl create configmap fiap-env-vars \
   --from-literal=chave1="$chave1" \
   --from-literal=chave2="$chave2"
 
 
 kubectl apply -f exemplo_deploy_usando_configmap.yaml
+kubectl describe configmap fiap-env-vars
 
 #	Atualização dinâmica das configurações da aplicação sem necessidade de rebuild ou restart:
-#	Demonstrar como uma alteração no App Configuration é refletida na aplicação.
-#	Exemplo: Modifique um valor no App Configuration e observe a mudança na aplicação em execução no AKS.
+#	Exemplo: Modifique um valor no ConfigMap e observe a mudança na aplicação em execução no AKS.
 
-az appconfig kv set --name $NOME_APP_CONFIG --key chave1 --value mudou_valor1
-az appconfig kv set --name $NOME_APP_CONFIG --key chave2 --value mudou_valor2 --content-type "application/json"
+kubectl patch configmap fiap-env-vars -p '{"data":{"chave2":"mudou_valor2"}}'
+kubectl describe configmap fiap-env-vars
+
+# O Kubernetes injeta os valores do ConfigMap como variáveis de ambiente no momento do start do container.
+# Se você alterou o ConfigMap depois do container estar rodando, essas alterações NÃO são refletidas automaticamente no ambiente.
+# Para o pod receber a nova variável, precisa recriar o pod (restart).
+
+kubectl rollout restart deployment python-env-app
 
 ##################################################################
 
