@@ -21,7 +21,7 @@ spec:
         nodetype: gpu # Garante que o pod seja agendado em um nó com label 'nodetype: gpu'.
       containers:
       - name: gpu-app
-        image: tonanuvem/python-env-app:linux
+        image: tonanuvem/python-app-env:linux
         ports:
         - containerPort: 5000 # Adicionado: A porta em que a aplicação dentro do container escuta.
 
