@@ -1,0 +1,29 @@
+name: Build and Push Linux Docker Image to Docker Hub
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./helmcharts/python-app-env
+        file: ./helmcharts/python-app-env/Dockerfile
+        push: true
+        tags: |
+          tonanuvem/python-app-env:linux
+          tonanuvem/python-app-env:linux-${{ github.run_id }}
+        platforms: linux/amd64
