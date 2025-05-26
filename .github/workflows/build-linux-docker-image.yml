@@ -23,7 +23,5 @@ jobs:
         context: ./helmcharts/python-app-env
         file: ./helmcharts/python-app-env/Dockerfile
         push: true
-        tags: |
-          tonanuvem/python-app-env:linux
-          #tonanuvem/python-app-env:linux-${{ github.run_id }}
+        tags: tonanuvem/python-app-env:linux
         platforms: linux/amd64
