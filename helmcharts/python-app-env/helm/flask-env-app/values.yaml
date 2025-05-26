@@ -1,0 +1,11 @@
+image:
+  repository: tonanuvem/python-env-app
+  tag: latest
+
+service:
+  type: LoadBalancer
+  port: 80
+
+env:
+  chave1: "valor1"
+  chave2: "valor2"
