@@ -1,52 +1,25 @@
-# .github/workflows/build-windows-docker-image.yml
 name: Build and Push Windows Docker Image to Docker Hub
 
-# O workflow será acionado em cada push para o branch 'main'
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
-    # Define o ambiente de execução para a job.
-    # É crucial usar um runner Windows para construir imagens Docker para Windows.
-    runs-on: windows-latest # Usa o agente Windows mais recente
+    runs-on: windows-latest
 
     steps:
-    # Passo 1: Faz o checkout do código do seu repositório
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Passo 2: Configura o Buildx, um buildkit Docker que melhora a construção
-    # e permite especificar a plataforma.
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    # Passo 3: Faz login no Docker Hub usando os segredos configurados
     - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }} # Nome de usuário do Docker Hub
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}   # Token de acesso pessoal ou senha do Docker Hub
+      run: |
+        echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
-    # Passo 4: Constrói e envia a imagem Docker
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        # O contexto da build (o diretório onde o Dockerfile e o código estão).
-        # Ajuste este caminho se seu Dockerfile e código não estiverem nesta subpasta.
-        context: ./helmcharts/python-app-env
-        # O caminho para o Dockerfile dentro do contexto.
-        file: ./helmcharts/python-app-env/Dockerfile.win # Caminho do Dockerfile ajustado
-        # Define como true para enviar a imagem para o registro após a construção.
-        push: true
-        # Define as tags para a imagem.
-        # - Uma tag 'latest' que sempre aponta para a última build bem-sucedida.
-        # - Uma tag única usando o ID da execução do GitHub Actions.
-        tags: |
-          tonanuvem/python-app-env:win                    # Substitua 'tonanuvem' pelo seu Docker ID
-          tonanuvem/python-app-env:${{ github.run_id }}   # Substitua 'tonanuvem' pelo seu Docker ID
-        # Especifica a plataforma para a qual a imagem está sendo construída.
-        # Crucial para garantir que seja uma imagem Windows.
-        platforms: windows/amd64
+    - name: Build Docker image (Windows)
+      run: |
+        docker build -t tonanuvem/python-app-env:win -t tonanuvem/python-app-env:${{ github.run_id }} -f ./helmcharts/python-app-env/Dockerfile.win ./helmcharts/python-app-env
+
+    - name: Push Docker image to Docker Hub
+      run: |
+        docker push tonanuvem/python-app-env:win
+        # docker push tonanuvem/python-app-env:${{ github.run_id }}
