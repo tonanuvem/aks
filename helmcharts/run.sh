@@ -101,7 +101,7 @@ az ad sp create-for-rbac --name $CLUSTER_NAME --role contributor  --scopes /subs
 #        definir Application (client) ID	 = VALOR DO "clientId" do comando anterior
 #        definir Directory (tenant) ID     = VALOR DO TENANTID do comando anterior
 #        deixar CREDENTIAL como Service principal key
-#        Marque a opção: ✅ Grant access permission to all pipelines
+#        Marque a opção: Grant access permission to all pipelines
 #        definir Service Connection Name   = devops-aks
 #        Clique em Verify and save         = VERIFICAR SE HÁ ERRO NA VALIDAÇÃO
 
