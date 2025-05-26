@@ -11,3 +11,8 @@ service:
   port: 80
 
 configMapName: fiap-env-vars
+
+# configMapName substitui o uso fixo (env)
+#env:
+#  chave1: "valor1"
+#  chave2: "valor2"
