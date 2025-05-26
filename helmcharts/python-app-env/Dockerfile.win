@@ -1,5 +1,16 @@
 # https://hub.docker.com/r/microsoft/windows-cssc-python
-FROM mcr.microsoft.com/windows-cssc/python:3.11-servercore-ltsc2022
+
+FROM mcr.microsoft.com/windows-cssc/python:3.11-nanoserver-ltsc2022 
+
+# FROM mcr.microsoft.com/windows-cssc/python:3.11-servercore-ltsc2022
+# FROM mcr.microsoft.com/windows-cssc/python:3.11-windows-ltsc2022
+# FROM mcr.microsoft.com/windows-cssc/python:3.11-server-ltsc2022 
+
+
+# Comece com a imagem nanoserver se sua aplicação Python for leve e não tiver muitas dependências do sistema operacional Windows. 
+# Se sua aplicação Python precisar de mais funcionalidades do Windows, como o .NET Framework ou alguns serviços de sistema, mas sem a necessidade de uma GUI, use a imagem servercore.
+# Use as imagens windows ou server apenas se sua aplicação Python realmente exigir um ambiente Windows completo com GUI ou bibliotecas de sistema muito específicas que não estão presentes nas outras imagens.
+# Elas são consideravelmente maiores e, portanto, menos eficientes para a maioria dos casos de uso de contêineres.
 
 WORKDIR /app
 
