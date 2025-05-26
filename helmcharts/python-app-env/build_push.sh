@@ -9,5 +9,10 @@ echo $USUARIO
 docker build -t $USUARIO/python-env-app:latest .
 
 # Login no DockerHub ou outro registry (ex: Azure Container Registry)
+echo ""
 echo "Caso queira publicar a imagem no Docker Hub, executar o comando abaixo:"
 echo "              docker push $USUARIO/python-env-app:latest"
+echo ""
+echo "Caso queira rodar o Conteiner, executar o comando abaixo:"
+echo "              docker run -e chave2="oi mundo" -e chave1="chave 1 definida com -e" --name env --rm -p 32000:5000 -d tonanuvem/python-env-app:latest"
+echo ""
