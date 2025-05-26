@@ -1,11 +1,13 @@
+appName: python-env-app
+
 image:
   repository: tonanuvem/python-env-app
   tag: latest
+
+containerPort: 5000
 
 service:
   type: LoadBalancer
   port: 80
 
-env:
-  chave1: "valor 1 definido no arquivo values.yaml"
-  chave2: "valor 2 definido no arquivo values.yaml"
+configMapName: fiap-env-vars
