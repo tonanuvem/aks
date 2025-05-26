@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpu-app
+  template:
+    metadata:
+      labels:
+        app: cpu-app
+    spec:
+      nodeSelector:
+        nodetype: cpu   # ou wincpu conforme label correto do node
+      containers:
+      - name: cpu-app
+        image: tonanuvem/python-env-app
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cpu-app-service
+spec:
+  selector:
+    app: cpu-app
+  ports:
+  - protocol: TCP
+    port: 80         # Porta que o Service vai expor
+    targetPort: 80   # Porta do container (containerPort)
+  type: ClusterIP     # Pode ajustar para NodePort ou LoadBalancer se desejar acesso externo
