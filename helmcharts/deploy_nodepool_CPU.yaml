@@ -10,4 +10,4 @@ spec:
         nodetype: cpu
       containers:
       - name: cpu-app
-        image: tonanuvem/fiap_page
+        image: tonanuvem/python-env-app
