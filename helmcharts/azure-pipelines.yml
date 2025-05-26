@@ -1,0 +1,34 @@
+# azure-pipelines.yml
+# Este pipeline é acionado quando há um push para o branch 'main'.
+trigger:
+- main
+
+# Define o pool de agentes a ser usado.
+# É crucial usar um agente Windows para construir imagens Docker para Windows.
+pool:
+  vmImage: 'windows-latest' # Agente Windows mais recente
+
+# Define as variáveis que serão usadas no pipeline.
+variables:
+  # O nome da sua conexão de serviço para o Docker Hub.
+  dockerRegistryServiceConnection: 'hub.docker.com_tonanuvem' # Substitua pelo nome da sua conexão
+  # O nome que a imagem terá no Docker Hub (seu_usuario_dockerhub/nome_do_repositorio).
+  imageRepository: 'tonanuvem/python-app-env' # Substitua 'tonanuvem' pelo seu Docker ID
+  # O caminho para o seu Dockerfile dentro do repositório.
+  # Certifique-se de que este caminho esteja correto em relação à raiz do seu repositório.
+  dockerfilePath: '$(Build.SourcesDirectory)/helmcharts/python-app-env/Dockerfile.win'
+  # A tag para a imagem Docker. Usamos o ID da build para tags únicas.
+  tag: '$(Build.BuildId)'
+
+# Define os passos do pipeline.
+steps:
+- task: Docker@2
+  displayName: 'Build e push da imagem para o Docker Hub'
+  inputs:
+    command: 'buildAndPush' # Comando para construir e enviar a imagem
+    repository: '$(imageRepository)' # Nome do repositório da imagem no Docker Hub
+    dockerfile: '$(dockerfilePath)' # Caminho para o Dockerfile
+    containerRegistry: '$(dockerRegistryServiceConnection)' # Conexão de serviço para o Docker Hub
+    tags: |
+      $(tag) # Tag única baseada no ID da build
+      win # Opcionalmente, também adiciona a tag 'win'
