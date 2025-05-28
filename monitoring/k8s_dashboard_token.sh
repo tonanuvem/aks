@@ -2,7 +2,7 @@
 #export COLOR_RESET='\e[0m'
 #export COLOR_LIGHT_GREEN='\e[0;49;32m' 
 
-export INGRESS_HOST=$(curl -s checkip.amazonaws.com)
+#export INGRESS_HOST=$(curl -s checkip.amazonaws.com)
 
 wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.6.1/aio/deploy/recommended.yaml
 
@@ -16,8 +16,25 @@ kubectl apply -f https://raw.githubusercontent.com/tonanuvem/k8s-exemplos/master
 
 kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'
 kubectl get svc kubernetes-dashboard -n kubernetes-dashboard
-export INGRESS_PORT=$(kubectl -n kubernetes-dashboard get service kubernetes-dashboard -o jsonpath='{.spec.ports[?()].nodePort}')
+
+SERVICE_NAME=kubernetes-dashboard
+NAMESPACE=kubernetes-dashboard
+echo -n "Aguardando IP externo para o serviço '$SERVICE_NAME' no namespace '$NAMESPACE'"
+# Espera até que o IP externo seja atribuído
+while true; do
+  EXTERNAL_IP=$(kubectl get svc "$SERVICE_NAME" -n "$NAMESPACE" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  
+  if [ -n "$EXTERNAL_IP" ]; then
+    echo -e "\n✅ IP externo disponível: $EXTERNAL_IP"
+    break
+  fi
+
+  echo -n "."
+  sleep 1
+done
+
+export INGRESS_PORT=$(kubectl -n kubernetes-dashboard get service kubernetes-dashboard -o jsonpath='{.spec.ports[?()].port}')
 echo ""
-echo "Acessar K8S Dashboard: https://$INGRESS_HOST:$INGRESS_PORT"
+echo "Acessar K8S Dashboard: https://$EXTERNAL_IP:$INGRESS_PORT"
 echo ""
 echo ""
