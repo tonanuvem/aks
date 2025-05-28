@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-ssl
+  # namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # essa anotacao desabilita o redirect automatico do http para https
+spec:
+  ingressClassName: nginx # Define o Ingress Controller
+  tls:
+  - secretName: tls-secret
+    hosts: # Substitua por um domínio válido ou o IP do seu Ingress Controller
+    - ${HOST_SSL} 
+  rules:  # Substitua
+  - host: ${HOST_SSL} 
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-service # nome do serviço
+            port:
+              number: 80
