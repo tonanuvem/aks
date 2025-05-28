@@ -14,27 +14,20 @@ kubectl apply -f recommended.yaml
 
 kubectl apply -f https://raw.githubusercontent.com/tonanuvem/k8s-exemplos/master/dashboard_permission.yml
 
-kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'
+#kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'
+
 kubectl get svc kubernetes-dashboard -n kubernetes-dashboard
 
-SERVICE_NAME=kubernetes-dashboard
-NAMESPACE=kubernetes-dashboard
-echo -n "Aguardando IP externo para o serviço '$SERVICE_NAME' no namespace '$NAMESPACE'"
-# Espera até que o IP externo seja atribuído
-while true; do
-  EXTERNAL_IP=$(kubectl get svc "$SERVICE_NAME" -n "$NAMESPACE" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  
-  if [ -n "$EXTERNAL_IP" ]; then
-    echo -e "\n✅ IP externo disponível: $EXTERNAL_IP"
-    break
-  fi
+# Expor ClusterIP via portforward:
+ns=kubernetes-dashboard
+svc=kubernetes-dashboard
+port=443
+echo "Expondo $svc no namespace $ns na porta $port -> local $IP:$port"
+kubectl port-forward -n "$ns" "svc/$svc" "$port:$port" >/dev/null 2>&1 &
 
-  echo -n "."
-  sleep 1
-done
 
-export INGRESS_PORT=$(kubectl -n kubernetes-dashboard get service kubernetes-dashboard -o jsonpath='{.spec.ports[?()].port}')
+export IP=$(curl -s checkip.amazonaws.com)
 echo ""
-echo "Acessar K8S Dashboard: https://$EXTERNAL_IP:$INGRESS_PORT"
+echo "Acessar K8S Dashboard: https://$IP:8099/proxy/$port"
 echo ""
 echo ""
