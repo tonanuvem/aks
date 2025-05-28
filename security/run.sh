@@ -19,8 +19,8 @@ kubectl create secret tls tls-secret --key tls.key --cert tls.crt
 # Deploy de uma aplicação web simples (ex: network/nginx-deploy-a).
 
 kubectl apply -f nginx-deploy.yaml
-kubectl apply -f nginx-service-clusterip.yaml
-#kubectl apply -f nginx-service-loadbalancer.yaml
+#kubectl apply -f nginx-service-clusterip.yaml
+kubectl apply -f nginx-service-loadbalancer.yaml
 
 # Aguardar até que o IP Externo seja alocado
 
@@ -50,8 +50,8 @@ envsubst < ingress-ssl.yaml > ingress-ssl-final.yaml
 kubectl apply -f ingress-ssl-final.yaml
 
 
-envsubst < ingress-completo.yaml > ingress-completo-final.yaml
-kubectl apply -f ingress-completo-final.yaml
+#envsubst < ingress-completo.yaml > ingress-completo-final.yaml
+#kubectl apply -f ingress-completo-final.yaml
 
 kubectl get ingress -n default
 
@@ -61,6 +61,6 @@ kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath='{.sta
 # Acesse a aplicação via HTTP e  HTTPS no navegador usando o IP obtido ou o domínio configurado
 
 echo ""
-echo "Acesso via HTTP : http://$HOST"
+echo "Acesso via HTTP : http://$HOST_HTTP"
 echo ""
-echo "Acesso via HTTPS : https://$HOST"
+echo "Acesso via HTTPS : https://$HOST_SSL"
