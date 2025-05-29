@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: app
-        image: tonanuvem/spa:k8s
+        image: tonanuvem/spa_page:k8s
         ports:
         - containerPort: 80
