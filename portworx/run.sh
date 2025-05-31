@@ -64,3 +64,19 @@ kubectl create secret generic -n kube-system px-azure --from-literal=AZURE_TENAN
                                                       --from-literal=AZURE_CLIENT_ID=$APPID> \
                                                       --from-literal=AZURE_CLIENT_SECRET=$PASSWORD
 
+
+kubectl apply -f 'https://install.portworx.com/3.2?comp=pxoperator'
+
+kubectl get pods -A | grep "portworx"
+
+kubectl apply -f k8s_aks_1_31_7.yaml
+
+sleep 10
+
+kubectl get pods -A -o wide | grep -e portworx -e px
+
+kubectl get storagecluster -A
+
+kubectl get storageclass -A
+
+kubectl get pvc -A
