@@ -11,6 +11,8 @@ fi
 ROLENAME="portworx"
 SID=$(az account show --query id --output tsv)
 echo ""
+echo "OK, foi configurado Subscription ID: $SID"
+echo ""
 echo " Clusters AKS existentes no ambiente:"
 echo ""
 az aks list -o table
