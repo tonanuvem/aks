@@ -55,13 +55,16 @@ echo "Permissões configuradas:"
 echo "TENANT: $TENANT"
 echo "APPID : $APPID"
 echo "PASSWORD: $PASSWORD"
-
+echo ""
 # Criar secret para Portworx
 kubectl create secret generic -n kube-system px-azure \
   --from-literal=AZURE_TENANT_ID=$TENANT \
   --from-literal=AZURE_CLIENT_ID=$APPID \
   --from-literal=AZURE_CLIENT_SECRET=$PASSWORD
 
+echo ""
+echo "Instalando o Portworx Operator"
+echo ""
 # Instalar Portworx Operator
 kubectl apply -f 'https://install.portworx.com/3.2?comp=pxoperator'
 
