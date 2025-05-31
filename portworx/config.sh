@@ -72,12 +72,28 @@ kubectl apply -f 'https://install.portworx.com/3.2?comp=pxoperator'
 kubectl get pods -A | grep portworx
 
 # Aplicar StorageCluster (substitua com seu YAML correto)
+kubectl create namspace portworx
 kubectl apply -f k8s_aks_1_31_7.yaml
 
 sleep 10
 
-# Verificações finais
+echo ""
+echo "Verificações finais"
 kubectl get pods -A -o wide | grep -e portworx -e px
 kubectl get storagecluster -A
 kubectl get storageclass -A
 kubectl get pvc -A
+echo ""
+
+WORKER_NODES=2
+# Aguadar até: Ready 1/1 (Demora uns 4 min) --> Para sair, CTRL + C
+echo "Aguardando PORTWORX: GERENCIAMENTO DE VOLUMES (geralmente 4 min): "
+while [ "$(kubectl get pods -o wide -n kube-system -l name=portworx | grep 2/2 | wc -l)" != "$WORKER_NODES" ]; do
+  printf "."
+  sleep 1
+done
+
+echo "Gerenciador de volumes Portworx está executando em todo o cluster."
+echo "Verificando status : "
+PX_POD=$(kubectl get pods -l name=portworx -n kube-system -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -it $PX_POD -c portworx -n kube-system -- /opt/pwx/bin/pxctl status
