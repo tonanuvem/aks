@@ -88,12 +88,12 @@ echo ""
 WORKER_NODES=2
 # Aguadar até: Ready 1/1 (Demora uns 4 min) --> Para sair, CTRL + C
 echo "Aguardando PORTWORX: GERENCIAMENTO DE VOLUMES (geralmente 4 min): "
-while [ "$(kubectl get pods -o wide -n kube-system -l name=portworx | grep 2/2 | wc -l)" != "$WORKER_NODES" ]; do
+while [ "$(kubectl get pods -A -o wide | grep -e portworx -e px | grep Running | wc -l)" != 1 ]; do
   printf "."
   sleep 1
 done
 
 echo "Gerenciador de volumes Portworx está executando em todo o cluster."
 echo "Verificando status : "
-PX_POD=$(kubectl get pods -l name=portworx -n kube-system -o jsonpath='{.items[0].metadata.name}')
+PX_POD=$(kubectl get pods -l name=portworx-operator -n kube-system -o jsonpath='{.items[0].metadata.name}')
 kubectl exec -it $PX_POD -c portworx -n kube-system -- /opt/pwx/bin/pxctl status
