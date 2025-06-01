@@ -15,8 +15,10 @@ echo ""
 echo "Clusters AKS existentes no ambiente:"
 az aks list -o table
 echo ""
-read -p "Digite o nome do CLUSTER que será usado: " CLUSTER
-read -p "Digite o nome do RESOURCE GROUP que será usado: " RG
+#read -p "Digite o nome do CLUSTER que será usado: " CLUSTER
+CLUSTER=fiapaks-portworx
+#read -p "Digite o nome do RESOURCE GROUP que será usado: " RG
+RG=fiapaks-portworx
 echo ""
 echo "Cluster selecionado: $CLUSTER no Resource Group: $RG"
 
@@ -68,11 +70,18 @@ echo ""
 # Instalar Portworx Operator
 kubectl apply -f 'https://install.portworx.com/3.2?comp=pxoperator'
 
-# Verificar instalação
+echo ""
+echo "Verificando instalação"
+echo ""
 kubectl get pods -A | grep portworx
 
+echo ""
+echo "Aplicando StorageCluster"
+echo ""
 # Aplicar StorageCluster (substitua com seu YAML correto)
-kubectl create namspace portworx
+kubectl create namespace portworx
+sleep 3
+echo ""
 kubectl apply -f k8s_aks_1_31_7.yaml
 
 sleep 10
