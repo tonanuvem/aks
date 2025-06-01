@@ -82,7 +82,7 @@ echo ""
 kubectl create namespace portworx
 sleep 3
 echo ""
-kubectl apply -f k8s_aks_1_31_7.yaml
+kubectl apply -f k8s_2nodes_aks_1_31_7.yaml
 
 sleep 10
 
