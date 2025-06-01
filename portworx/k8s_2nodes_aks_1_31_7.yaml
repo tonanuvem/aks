@@ -15,8 +15,8 @@ spec:
     deviceSpecs:
       - type=Premium_LRS,size=32
     maxStorageNodesPerZone: 2
-    minStorageNodes: 2
-    storageNodesPerZone: 2
+    #minStorageNodes: 2
+    #storageNodesPerZone: 2
   secretsProvider: k8s
   stork:
     enabled: true
