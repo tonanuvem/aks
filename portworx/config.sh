@@ -80,7 +80,7 @@ echo "Aplicando StorageCluster"
 echo ""
 # Aplicar StorageCluster (substitua com seu YAML correto)
 kubectl create namespace portworx
-sleep 3
+sleep 5
 echo ""
 kubectl apply -f k8s_2nodes_aks_1_31_7.yaml
 
