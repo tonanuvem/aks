@@ -4,3 +4,7 @@ az group create --name fiapaks-portworx --location centralus
 
 az aks create --resource-group fiapaks-portworx --name fiapaks-portworx --node-count 2 --node-vm-size Standard_B2ms --kubernetes-version 1.31.7 --enable-addons monitoring --generate-ssh-keys
 
+az aks get-credentials --resource-group fiapaks-portworx --name fiapaks-portworx --file ~/.kube/config-fiapaks-portworx --overwrite-existing
+export KUBECONFIG=~/.kube/config-fiapaks-portworx
+kubectl get nodes
+kubectl get namespaces
