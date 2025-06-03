@@ -40,7 +40,8 @@ helm search repo bitnami/kube-prometheus
 helm install prometheus bitnami/kube-prometheus
 kubectl port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
 
-# Grafana
+##################################################################
+# Grafana                    : CONFIGURAÇÃO DEMORADA DEMAIS PARA ACESSAR AS MÉTRICAS DO PROMETHEUS
 IP=$(curl checkip.amazonaws.com)
 HOST_GRAFANA="$IP" # Requisicao chega no Grafana 
 # HOST_GRAFANA="grafana.$IP.sslip.io" # Requisicao tava chegando no code server
