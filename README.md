@@ -17,6 +17,7 @@ Seu principal caso de uso é a segmentação de rede e o isolamento de aplicaç�
 
 | VM                     | vCPUs | RAM    | GPU              | Uso típico                       | Preço  |
 |------------------------|-------|--------|------------------|---------------------------------|--------|
+| Standard_A2_v2         | 2     | 4 GB   | Nenhuma          | Desenvolvimento, testes leves   | Baixo  |
 | Standard_B2s           | 2     | 4 GB   | Nenhuma          | Desenvolvimento, testes leves   | Baixo  |
 | Standard_D4d_v4        | 4     | 16 GB  | Nenhuma          | Produção geral, apps médias     | Médio  |
 | Standard_NC4as_T4_v3   | 4     | 28 GB  | 1x NVIDIA T4 GPU | ML, AI, inferência, gráficos    | Alto   |
