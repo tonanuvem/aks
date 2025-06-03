@@ -1,7 +1,7 @@
 apiVersion: azconfig.io/v1
 kind: AzureAppConfigurationProvider
 metadata:
-  name: appconfigurationprovider-sample
+  name: appconfigurationprovider-fiap-app-config
 spec:
   endpoint: ${APPCONFIG_URL}
   target:
