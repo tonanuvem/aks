@@ -1,0 +1,8 @@
+apiVersion: azconfig.io/v1
+kind: AzureAppConfigurationProvider
+metadata:
+  name: appconfigurationprovider-sample
+spec:
+  endpoint: {APPCONFIG_URL}
+  target:
+    configMapName: configmap-criado-pelo-appconfig-provider
