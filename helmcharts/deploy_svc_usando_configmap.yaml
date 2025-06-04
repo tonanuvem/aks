@@ -15,6 +15,7 @@ spec:
       containers:
       - name: python-app-env
         image: tonanuvem/python-app-env:linux
+        imagePullPolicy: Always
         env:
         - name: chave1
           valueFrom:
