@@ -5,4 +5,4 @@ metadata:
 spec:
   endpoint: ${APPCONFIG_URL}
   target:
-    configMapName: ${NOME_APP_CONFIG}
+    configMapName: app-config-map
