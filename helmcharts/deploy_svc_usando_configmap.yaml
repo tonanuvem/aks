@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app-env-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: python-app-env
+  template:
+    metadata:
+      labels:
+        app: python-app-env
+    spec:
+      containers:
+      - name: python-app-env
+        image: tonanuvem/python-app-env:linux
+        env:
+        - name: CHAVE1
+          valueFrom:
+            configMapKeyRef:
+              name: app-config-map
+              key: chave1
+        - name: CHAVE2
+          valueFrom:
+            configMapKeyRef:
+              name: app-config-map
+              key: chave2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app-env-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: python-app-env
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
