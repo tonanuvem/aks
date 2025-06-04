@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: minha-app
-    image: minha-imagem
+    image: tonanuvem/python-app-env:linux
     env:
     - name: CHAVE1
       valueFrom:
