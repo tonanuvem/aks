@@ -16,12 +16,12 @@ spec:
       - name: python-app-env
         image: tonanuvem/python-app-env:linux
         env:
-        - name: CHAVE1
+        - name: chave1
           valueFrom:
             configMapKeyRef:
               name: app-config-map
               key: chave1
-        - name: CHAVE2
+        - name: chave2
           valueFrom:
             configMapKeyRef:
               name: app-config-map
