@@ -1,12 +1,12 @@
 #!/bin/bash
 
-echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-echo "!!! 🚨 ALERTA MÁXIMO DE DESTRUIÇÃO DE DADOS 🚨 !!!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!!! 🚨 ALERTA MÁXIMO DE DESTRUIÇÃO DE DADOS 🚨                                    !!!"
 echo "!!! Este script irá tentar remover TODAS as Azure File Shares E Storage Accounts !!!"
-echo "!!! na assinatura ATIVA. Esta ação é IRREVERSÍVEL. !!!"
-echo "!!! USANDO SOMENTE PARA ECONOMIA DOS CRÉDITOS. !!!"
-echo "!!! Obs. não exclui o Storage do Cloud Shell. !!!"
-echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!!! na assinatura ATIVA. Esta ação é IRREVERSÍVEL.                               !!!"
+echo "!!! USANDO SOMENTE PARA ECONOMIA DOS CRÉDITOS.                                   !!!"
+echo "!!! Obs. não exclui o Storage do Cloud Shell.                                    !!!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo ""
 echo "Verifique sua assinatura atual:"
 az account show
