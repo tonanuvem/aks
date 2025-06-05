@@ -9,82 +9,7 @@ import socket
 
 app = Flask(__name__)
 
-# HTML template definido aqui, mas movido visualmente para baixo
-TEMPLATE_HTML = '''...'''
-
-def get_system_info():
-    info = {
-        "Sistema Operacional": platform.system(),
-        "Versão do SO": platform.version(),
-        "Kernel": platform.release(),
-        "Plataforma": platform.platform(),
-        "CPU": "Desconhecido",
-        "Núcleos (lógicos)": os.cpu_count()
-    }
-
-    try:
-        with open("/proc/cpuinfo") as f:
-            for line in f:
-                if "model name" in line:
-                    info["CPU"] = line.split(":")[1].strip()
-                    break
-    except Exception as e:
-        info["CPU"] = f"Erro ao obter CPU: {e}"
-
-    try:
-        output = subprocess.check_output(
-            ["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"],
-            stderr=subprocess.STDOUT
-        ).decode().strip()
-        info["GPU"] = output or "Nenhuma GPU detectada"
-    except Exception:
-        info["GPU"] = "Não detectada GPU ou nvidia-smi ausente"
-
-    mem = psutil.virtual_memory()
-    info["Memória Total (GB)"] = round(mem.total / (1024**3), 2)
-    info["Python"] = sys.version.split()[0]
-
-    try:
-        hostname = socket.gethostname()
-        ip_address = socket.gethostbyname(hostname)
-    except:
-        hostname, ip_address = "Desconhecido", "Desconhecido"
-
-    info["Hostname"] = hostname
-    info["IP"] = ip_address
-
-    info["Em Container"] = False
-    try:
-        if os.path.exists("/.dockerenv"):
-            info["Em Container"] = True
-        else:
-            with open("/proc/1/cgroup") as f:
-                if any("docker" in line or "kubepods" in line for line in f):
-                    info["Em Container"] = True
-    except Exception:
-        pass
-
-    uptime_seconds = time.time() - psutil.boot_time()
-    info["Uptime (h)"] = round(uptime_seconds / 3600, 2)
-
-    return info
-
-@app.route("/")
-def show_env_vars():
-    env_vars = {
-        "chave1": os.getenv("chave1", "Variável chave1 não definida"),
-        "chave2": os.getenv("chave2", "Variável chave2 não definida"),
-    }
-    return render_template_string(TEMPLATE_HTML, env_vars=env_vars, system_info=get_system_info(), mostrar_todas=False)
-
-@app.route("/list_env_var")
-def list_env_var():
-    return render_template_string(TEMPLATE_HTML, env_vars=dict(os.environ), system_info=get_system_info(), mostrar_todas=True)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
-
-# ------------------------ HTML TEMPLATE NO FINAL ----------------------------
+# ========================= TEMPLATE HTML ==============================
 
 TEMPLATE_HTML = '''
 <!DOCTYPE html>
@@ -170,3 +95,81 @@ TEMPLATE_HTML = '''
 </body>
 </html>
 '''
+
+# ======================= FUNÇÕES LÓGICAS ==============================
+
+def get_system_info():
+    info = {
+        "Sistema Operacional": platform.system(),
+        "Versão do SO": platform.version(),
+        "Kernel": platform.release(),
+        "Plataforma": platform.platform(),
+        "CPU": "Desconhecido",
+        "Núcleos (lógicos)": os.cpu_count()
+    }
+
+    try:
+        with open("/proc/cpuinfo") as f:
+            for line in f:
+                if "model name" in line:
+                    info["CPU"] = line.split(":")[1].strip()
+                    break
+    except Exception as e:
+        info["CPU"] = f"Erro ao obter CPU: {e}"
+
+    try:
+        output = subprocess.check_output(
+            ["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"],
+            stderr=subprocess.STDOUT
+        ).decode().strip()
+        info["GPU"] = output or "Nenhuma GPU detectada"
+    except Exception:
+        info["GPU"] = "Não detectada GPU ou nvidia-smi ausente"
+
+    mem = psutil.virtual_memory()
+    info["Memória Total (GB)"] = round(mem.total / (1024**3), 2)
+    info["Python"] = sys.version.split()[0]
+
+    try:
+        hostname = socket.gethostname()
+        ip_address = socket.gethostbyname(hostname)
+    except:
+        hostname, ip_address = "Desconhecido", "Desconhecido"
+
+    info["Hostname"] = hostname
+    info["IP"] = ip_address
+
+    info["Em Container"] = False
+    try:
+        if os.path.exists("/.dockerenv"):
+            info["Em Container"] = True
+        else:
+            with open("/proc/1/cgroup") as f:
+                if any("docker" in line or "kubepods" in line for line in f):
+                    info["Em Container"] = True
+    except Exception:
+        pass
+
+    uptime_seconds = time.time() - psutil.boot_time()
+    info["Uptime (h)"] = round(uptime_seconds / 3600, 2)
+
+    return info
+
+# ============================ ROTAS ================================
+
+@app.route("/")
+def show_env_vars():
+    env_vars = {
+        "chave1": os.getenv("chave1", "Variável chave1 não definida"),
+        "chave2": os.getenv("chave2", "Variável chave2 não definida"),
+    }
+    return render_template_string(TEMPLATE_HTML, env_vars=env_vars, system_info=get_system_info(), mostrar_todas=False)
+
+@app.route("/list_env_var")
+def list_env_var():
+    return render_template_string(TEMPLATE_HTML, env_vars=dict(os.environ), system_info=get_system_info(), mostrar_todas=True)
+
+# ============================ MAIN ================================
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
