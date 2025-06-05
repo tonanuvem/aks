@@ -1,4 +1,5 @@
 from flask import Flask, render_template_string, request
+from werkzeug.middleware.proxy_fix import ProxyFix
 import os
 import platform
 import subprocess
@@ -8,6 +9,7 @@ import time
 import socket
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)  # Suporte para proxy reverso
 
 # ========================= TEMPLATE HTML ==============================
 
@@ -75,11 +77,11 @@ TEMPLATE_HTML = '''
 
                 <div class="card-content center-align">
                     {% if mostrar_todas %}
-                        <a href="{{ url_for('show_env_vars') }}" class="waves-effect waves-light btn teal lighten-1">
+                        <a href="{{ request.script_root or '.' }}" class="waves-effect waves-light btn teal lighten-1">
                             <i class="material-icons left">arrow_back</i>Mostrar Apenas chave1 e chave2
                         </a>
                     {% else %}
-                        <a href="{{ url_for('list_env_var') }}" class="waves-effect waves-light btn teal lighten-1">
+                        <a href="{{ request.script_root ~ '/list_env_var' }}" class="waves-effect waves-light btn teal lighten-1">
                             <i class="material-icons left">list</i>Listar Todas as Variáveis
                         </a>
                     {% endif %}
@@ -96,7 +98,7 @@ TEMPLATE_HTML = '''
 </html>
 '''
 
-# ======================= FUNÇÕES LÓGICAS ==============================
+# ======================= FUNÇÃO DE SISTEMA ==============================
 
 def get_system_info():
     info = {
