@@ -9,6 +9,9 @@ import socket
 
 app = Flask(__name__)
 
+# HTML template definido aqui, mas movido visualmente para baixo
+TEMPLATE_HTML = '''...'''
+
 def get_system_info():
     info = {
         "Sistema Operacional": platform.system(),
