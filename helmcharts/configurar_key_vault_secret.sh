@@ -10,12 +10,26 @@ NOME_APP_CONFIG=${NOME_APP_CONFIG} # Nome do seu App Configuration Store
 NOME_AKS="fiapaks"
 
 NOME_SEGREDO_KV="segredo1"            # Nome do segredo DENTRO do Key Vault
-VALOR_SEGREDO="Quem ganhar o KAHOOT da ultima aula vai ganhar um prêmio" # <<< AJUSTE ESTE VALOR PARA O SEU SEGREDO REAL
+VALOR_SEGREDO="MeuValorSuperSecreto123" # <<< AJUSTE ESTE VALOR PARA O SEU SEGREDO REAL
 NOME_CHAVE_APPCONFIG_PARA_KVREF="segredo1" # Nome da chave no App Config que fará referência ao segredo do KV
 
 
 # ==============================================================================
-# 2. CRIAR O SEGREDO NO AZURE KEY VAULT
+# 2. VERIFICAÇÃO DAS VARIÁVEIS
+# (Esta nova seção previne o erro que você encontrou)
+# ==============================================================================
+echo "Verificando se as variáveis foram definidas..."
+if [ -z "$NOME_GRUPO_RECURSOS" ] || [ -z "$NOME_KEY_VAULT" ] || [ -z "$NOME_APP_CONFIG" ]; then
+    echo "ERRO: Uma ou mais variáveis essenciais (NOME_GRUPO_RECURSOS, NOME_KEY_VAULT, NOME_APP_CONFIG) não estão definidas."
+    echo "Por favor, defina-as no início do script e execute novamente."
+    exit 1
+fi
+echo "Variáveis definidas corretamente. Continuando..."
+echo "--------------------------------------------------"
+
+
+# ==============================================================================
+# 3. CRIAR O SEGREDO NO AZURE KEY VAULT
 # ==============================================================================
 echo "Criando o segredo '$NOME_SEGREDO_KV' no Key Vault '$NOME_KEY_VAULT'..."
 az keyvault secret set \
@@ -28,7 +42,7 @@ echo "--------------------------------------------------"
 
 
 # ==============================================================================
-# 3. CRIAR A REFERÊNCIA DO KEY VAULT NO AZURE APP CONFIGURATION
+# 4. CRIAR A REFERÊNCIA DO KEY VAULT NO AZURE APP CONFIGURATION
 # ==============================================================================
 echo "Obtendo o URI do segredo para criar a referência..."
 # Obtém o identificador (URI) completo do segredo que acabamos de criar.
@@ -46,7 +60,7 @@ echo "--------------------------------------------------"
 
 
 # ==============================================================================
-# 4. CONFIGURAR AS PERMISSÕES (ATRIBUIÇÕES DE FUNÇÃO - RBAC)
+# 5. CONFIGURAR AS PERMISSÕES (ATRIBUIÇÕES DE FUNÇÃO - RBAC)
 # ==============================================================================
 echo "Obtendo o Client ID da identidade do Kubelet do AKS..."
 # Obtém o ID da identidade gerenciada do Kubelet do cluster AKS, que o provider usará.
