@@ -6,11 +6,10 @@ spec:
   endpoint: ${APPCONFIG_URL}
   target:
     configMapName: app-config-map
-  keyValues:
-    # Seleciona as chaves que você quer monitorar
-    - keyFilter: "*" # Pega todas as chaves.
-      labelFilter: "" # Adicione um filtro de label se usar labels no App Configuration
-      # Configuração de Refresh
-      refresh:
-        enabled: true
-        interval: 5s # Define um intervalo para verificar por mudanças.
+  configuration:             # <--- Campo principal para configuração de chaves-valores
+    selectors:
+      - keyFilter: "*"       # Pega todas as chaves
+        labelFilter: ""      # Especifique um label se necessário, ou use "\0" para nenhum label
+    refresh:                 # <--- Configurações de refresh para as chaves selecionadas acima
+      enabled: true
+      interval: "5s"       # Intervalo de atualização (precisa ser uma string de duração, ex: "30s", "1m", "2h30m")
