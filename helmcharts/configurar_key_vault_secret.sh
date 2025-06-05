@@ -14,7 +14,7 @@ NOME_CHAVE_APPCONFIG_PARA_KVREF="segredo1"
 # ATENÇÃO: Este nome precisa ser único globalmente no Azure. Se este script falhar
 # na criação do Key Vault, pode ser necessário adicionar um sufixo aleatório.
 # Ex: NOME_KEY_VAULT="chavesecreta-${NOME_APP_CONFIG}-$(openssl rand -hex 3)"
-NOME_KEY_VAULT="chavesecreta-${NOME_APP_CONFIG}"
+NOME_KEY_VAULT="chavesecreta-$(openssl rand -hex 3)"
 
 # A localização será obtida dinamicamente do grupo de recursos
 LOCATION=$(az group show --name $NOME_GRUPO_RECURSOS --query location -o tsv)
