@@ -16,7 +16,6 @@ NOME_CHAVE_APPCONFIG_PARA_KVREF="segredo1" # Nome da chave no App Config que far
 
 # ==============================================================================
 # 2. VERIFICAÇÃO DAS VARIÁVEIS
-# (Esta nova seção previne o erro que você encontrou)
 # ==============================================================================
 echo "Verificando se as variáveis foram definidas..."
 if [ -z "$NOME_GRUPO_RECURSOS" ] || [ -z "$NOME_KEY_VAULT" ] || [ -z "$NOME_APP_CONFIG" ]; then
