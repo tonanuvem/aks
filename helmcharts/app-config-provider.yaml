@@ -12,4 +12,7 @@ spec:
         labelFilter: ""      # Especifique um label se necessário, ou use "\0" para nenhum label
     refresh:                 # <--- Configurações de refresh para as chaves selecionadas acima
       enabled: true
-      interval: "5s"       # Intervalo de atualização (precisa ser uma string de duração, ex: "30s", "1m", "2h30m")
+      interval: "5s"         # Intervalo de atualização (precisa ser uma string de duração, ex: "30s", "1m", "2h30m")
+  secret:                    # <--- Configuração de secret aqui
+    target:
+      secretName: app-secret # 'secret' vai aqui dentro
