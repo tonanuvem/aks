@@ -6,14 +6,12 @@
 # Variáveis que serão definidas dentro do script
 NOME_GRUPO_RECURSOS="fiapaks"
 NOME_AKS="fiapaks"
+NOME_APP_CONFIG=${NOME_APP_CONFIG}
 NOME_SEGREDO_KV="segredo1"
 VALOR_SEGREDO="MeuValorSuperSecreto12345" # <<< AJUSTE ESTE VALOR SE NECESSÁRIO
 NOME_CHAVE_APPCONFIG_PARA_KVREF="segredo1"
 
-# O nome do Key Vault agora é derivado do nome do App Configuration
-# ATENÇÃO: Este nome precisa ser único globalmente no Azure. Se este script falhar
-# na criação do Key Vault, pode ser necessário adicionar um sufixo aleatório.
-# Ex: NOME_KEY_VAULT="chavesecreta-${NOME_APP_CONFIG}-$(openssl rand -hex 3)"
+# O nome do Key Vault terá um sufixo aleatório para garantir unicidade global
 NOME_KEY_VAULT="chavesecreta-$(openssl rand -hex 3)"
 
 # A localização será obtida dinamicamente do grupo de recursos
@@ -49,18 +47,33 @@ az keyvault create \
   --enable-rbac-authorization
 
 echo "--------------------------------------------------"
-echo "Criando o Azure App Configuration '$NOME_APP_CONFIG' (se não existir)..."
+echo "Verificando/Criando o Azure App Configuration '$NOME_APP_CONFIG'..."
+# Alterado para não falhar se já existir com um SKU diferente
 az appconfig create \
   --name $NOME_APP_CONFIG \
   --resource-group $NOME_GRUPO_RECURSOS \
   --location $LOCATION \
-  --sku Free -o none
-
-# ... (O restante do script continua igual) ...
+  --sku Free -o none || echo "App Configuration '$NOME_APP_CONFIG' já existe ou ocorreu um erro não crítico."
 
 # ==============================================================================
-# 4. CRIAR O SEGREDO E A REFERÊNCIA
+# 4. ATRIBUIR PERMISSÃO PARA O USUÁRIO ATUAL NO NOVO KEY VAULT (AJUSTE CRÍTICO)
 # ==============================================================================
+echo "Obtendo o ID do usuário logado..."
+CURRENT_USER_OBJECT_ID=$(az ad signed-in-user show --query id -o tsv)
+
+echo "Atribuindo a função 'Key Vault Secrets Officer' para o usuário atual no novo Key Vault..."
+az role assignment create \
+  --assignee-object-id $CURRENT_USER_OBJECT_ID \
+  --role "Key Vault Secrets Officer" \
+  --scope $(az keyvault show --name $NOME_KEY_VAULT --query id -o tsv)
+
+echo "Aguardando 30 segundos para a propagação da permissão RBAC..."
+sleep 30
+
+# ==============================================================================
+# 5. CRIAR O SEGREDO E A REFERÊNCIA (AGORA COM PERMISSÃO)
+# ==============================================================================
+echo "--------------------------------------------------"
 echo "Criando o segredo '$NOME_SEGREDO_KV' no Key Vault '$NOME_KEY_VAULT'..."
 az keyvault secret set \
   --vault-name $NOME_KEY_VAULT \
@@ -75,10 +88,10 @@ az appconfig kv set-keyvault \
   --key $NOME_CHAVE_APPCONFIG_PARA_KVREF \
   --secret-identifier "$SECRET_URI"
 
+# ==============================================================================
+# 6. CONFIGURAR AS PERMISSÕES PARA O AKS E APP CONFIG
+# ==============================================================================
 echo "--------------------------------------------------"
-# ==============================================================================
-# 5. CONFIGURAR AS PERMISSÕES (RBAC)
-# ==============================================================================
 echo "Obtendo o Client ID da identidade do Kubelet do AKS..."
 ASSIGNEE_ID=$(az aks show --resource-group $NOME_GRUPO_RECURSOS --name $NOME_AKS --query identityProfile.kubeletidentity.clientId -o tsv)
 
@@ -106,3 +119,4 @@ az role assignment create \
 
 echo "--------------------------------------------------"
 echo "Configuração completa concluída! ✅"
+echo "O novo Key Vault criado se chama: $NOME_KEY_VAULT"
