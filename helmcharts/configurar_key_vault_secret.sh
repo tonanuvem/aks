@@ -12,7 +12,7 @@ VALOR_SEGREDO="MeuValorSuperSecreto12345" # <<< AJUSTE ESTE VALOR SE NECESSÁRIO
 NOME_CHAVE_APPCONFIG_PARA_KVREF="segredo1"
 
 # O nome do Key Vault terá um sufixo aleatório para garantir unicidade global
-NOME_KEY_VAULT="chavesecreta-$(openssl rand -hex 3)"
+NOME_KEY_VAULT="${NOME_APP_CONFIG}"
 
 # A localização será obtida dinamicamente do grupo de recursos
 LOCATION=$(az group show --name $NOME_GRUPO_RECURSOS --query location -o tsv)
