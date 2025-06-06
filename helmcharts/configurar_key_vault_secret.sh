@@ -6,7 +6,7 @@
 # Variáveis que serão definidas dentro do script
 NOME_GRUPO_RECURSOS="fiapaks"
 NOME_AKS="fiapaks"
-NOME_APP_CONFIG=${NOME_APP_CONFIG}
+NOME_APP_CONFIG="${NOME_APP_CONFIG}"
 NOME_SEGREDO_KV="segredo1"
 VALOR_SEGREDO="MeuValorSuperSecreto12345" # <<< AJUSTE ESTE VALOR SE NECESSÁRIO
 NOME_CHAVE_APPCONFIG_PARA_KVREF="segredo1"
