@@ -1,14 +1,15 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-from-pod-with-label
+  name: allow-from-access-permitir
   namespace: namespace-a
 spec:
-  podSelector: {}
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          acesso: "permitir"
+  podSelector: {}  # Aplica a todos os pods em namespace-a
   policyTypes:
-  - Ingress
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector: {}  # Qualquer namespace
+          podSelector:
+            matchLabels:
+              acesso: permitir
