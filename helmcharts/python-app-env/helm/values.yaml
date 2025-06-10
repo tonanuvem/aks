@@ -13,6 +13,6 @@ service:
 configMapName: fiap-env-vars
 
 # configMapName substitui o uso fixo (env)
-#env:
-#  chave1: "valor1"
-#  chave2: "valor2"
+env:
+  chave1: "valor1"
+  chave2: "valor2"
