@@ -94,6 +94,7 @@ metadata:
   labels:
     name: mongo
 spec:
+  serviceName: "mongo" # Campo obrigatório no StatefulSet. Aponta para o um Headless Service.
   replicas: 1
   selector:
     matchLabels:
@@ -141,7 +142,9 @@ spec:
   ports:
     # the port that this service should serve on
   - port: 27017
-    targetPort: 27017
+    #targetPort: 27017
+    name: mongo
+  clusterIP: None # A configuração "None" torna o serviço "Headless".
   selector:
     app: mongo
 ---
