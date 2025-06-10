@@ -21,3 +21,12 @@ Seu principal caso de uso é a segmentação de rede e o isolamento de aplicaç�
 | Standard_B2s           | 2     | 4 GB   | Nenhuma          | Desenvolvimento, testes leves   | Baixo  |
 | Standard_D4d_v4        | 4     | 16 GB  | Nenhuma          | Produção geral, apps médias     | Médio  |
 | Standard_NC4as_T4_v3   | 4     | 28 GB  | 1x NVIDIA T4 GPU | ML, AI, inferência, gráficos    | Alto   |
+
+Tabela Resumo
+| Tamanho da VM (SKU) | vCPUs | RAM (GB) | Tipo de Carga de Trabalho Ideal |
+| :--- | :-: | :-: | :--- |
+| Standard_B2s (Sua atual) | 2 | 4 | Burstable / Variável |
+| Standard_B2ms | 2 | 8 | Burstable / Variável |
+| Standard_D2s_v3 | 2 | 8 | Uso Geral / Desempenho Constante |
+| Standard_D2as_v4 | 2 | 8 | Uso Geral / Desempenho Constante |
+| Standard_E2s_v3 | 2 | 16 | Otimizada para Memória |
