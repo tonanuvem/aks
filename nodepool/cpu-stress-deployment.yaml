@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-stress
+spec:
+  replicas: 10  # Intencionalmente alto para forçar escala
+  selector:
+    matchLabels:
+      app: cpu-stress
+  template:
+    metadata:
+      labels:
+        app: cpu-stress
+    spec:
+      containers:
+      - name: stress
+        image: progrium/stress
+        args: ["--cpu", "1"]  # consome 1 núcleo constantemente
+        resources:
+          requests:
+            cpu: "750m"
+            memory: "128Mi"
+          limits:
+            cpu: "750m"
+            memory: "128Mi"
