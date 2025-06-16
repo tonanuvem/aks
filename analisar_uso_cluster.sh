@@ -4,7 +4,9 @@ echo "=== ANÁLISE DE RECURSOS POR NÓ ==="
 echo
 
 for node in $(kubectl get nodes -o jsonpath='{.items[*].metadata.name}'); do
+    echo "----------------------------------------"
     echo "Nó: $node"
+    echo "----------------------------------------"
     echo ""
     echo "Recursos Alocáveis:"
     kubectl get node $node -o jsonpath='{.status.allocatable.cpu}{"m CPU, "}{.status.allocatable.memory}{" Memory"}'
@@ -17,7 +19,6 @@ for node in $(kubectl get nodes -o jsonpath='{.items[*].metadata.name}'); do
     echo ""
     echo "Total reservado neste nó:"
     kubectl describe node $node | grep -A 4 "Allocated resources"
-    echo "----------------------------------------"
     echo
     echo ""
 done
