@@ -1,7 +1,7 @@
 appName: python-env-app
 
 image:
-  repository: tonanuvem/python-env-app
+  repository: tonanuvem/python-app-env
   tag: 
 
 containerPort: 5000
